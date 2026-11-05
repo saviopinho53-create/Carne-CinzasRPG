@@ -1,0 +1,27 @@
+
+<main class="container">
+  <header class="cabecalho">
+    <span class="simbolo">✦</span>
+    <h1>CARNE & CINZAS</h1>
+    <p>SOBREVIVA AO FIM DO MUNDO</p>
+  </header>
+
+  <section class="menu">
+    <button class="opcao" data-tela="personagem">
+      <h2>Criar Sobrevivente</h2>
+      <p>Construa sua história em um mundo devastado.</p>
+    </button>
+
+    <button class="opcao" data-tela="campanhas">
+      <h2>Campanhas</h2>
+      <p>Reúna seu grupo e enfrente o desconhecido.</p>
+    </button>
+
+    <button class="opcao" data-tela="assentamentos">
+      <h2>Assentamentos</h2>
+      <p>Construa, administre e proteja sua comunidade.</p>
+    </button>
+  </section>
+
+  <p id="mensagem" aria-live="polite"></p>
+</main>
