@@ -407,3 +407,85 @@ nav button:focus-visible {
 #resumo-personagem.escondido {
   display: none;
 }
+
+/* SELEÇÃO DE ARQUÉTIPO */
+
+#etapa-arquetipo {
+  margin-top: 30px;
+}
+
+#etapa-arquetipo h3 {
+  font-size: 26px;
+}
+
+#etapa-arquetipo > p {
+  color: var(--secundario);
+  line-height: 1.6;
+}
+
+.lista-arquetipos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 25px 0;
+}
+
+.cartao-arquetipo {
+  padding: 20px 15px;
+  min-height: 75px;
+
+  background: var(--cartao);
+  color: var(--texto);
+
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.cartao-arquetipo:hover {
+  border-color: var(--destaque);
+  transform: translateY(-2px);
+}
+
+.cartao-arquetipo:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+.cartao-arquetipo.selecionado {
+  background: #352a27;
+  border: 2px solid var(--destaque);
+}
+
+#arquetipo-escolhido {
+  text-align: center;
+  color: var(--destaque);
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* GARANTE QUE A ETAPA FIQUE ESCONDIDA */
+
+#etapa-arquetipo.escondido {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .lista-arquetipos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-arquetipo {
+    transition: none;
+  }
+}
+
