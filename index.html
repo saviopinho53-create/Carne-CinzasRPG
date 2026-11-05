@@ -81,6 +81,78 @@
 
   </form>
 
+<!-- ETAPA 2: ESCOLHA DO TIPO -->
+<section id="etapa-tipo" class="escondido">
+
+  <p class="subtitulo">ETAPA 2 DE 4</p>
+
+  <h3>Escolha seu Tipo</h3>
+
+  <p>
+    Seu Tipo representa o papel que você
+    desempenha no mundo após o apocalipse.
+  </p>
+
+  <div class="lista-tipos">
+
+    <button type="button"
+            class="cartao-tipo"
+            data-tipo="Líder">
+      <strong>Líder</strong>
+      <span>
+        Coordena pessoas e organiza o grupo.
+      </span>
+    </button>
+
+    <button type="button"
+            class="cartao-tipo"
+            data-tipo="Lutador">
+      <strong>Lutador</strong>
+      <span>
+        Atua na proteção e nos confrontos.
+      </span>
+    </button>
+
+    <button type="button"
+            class="cartao-tipo"
+            data-tipo="Especialista">
+      <strong>Especialista</strong>
+      <span>
+        Utiliza conhecimentos e técnicas
+        para solucionar problemas.
+      </span>
+    </button>
+
+    <button type="button"
+            class="cartao-tipo"
+            data-tipo="Diplomata">
+      <strong>Diplomata</strong>
+      <span>
+        Atua em negociações e relações sociais.
+      </span>
+    </button>
+
+  </div>
+
+  <p id="tipo-escolhido">
+    Nenhum Tipo selecionado.
+  </p>
+
+  <button type="button"
+          id="voltar-identidade"
+          class="botao-secundario">
+    ← Voltar à identidade
+  </button>
+
+  <button type="button"
+          id="continuar-tipo"
+          class="botao-principal"
+          disabled>
+    Continuar →
+  </button>
+
+</section>
+
   <div id="resumo-personagem" class="escondido">
     <h3>Identidade registrada</h3>
     <p><strong>Nome:</strong> <span id="resumo-nome"></span></p>
