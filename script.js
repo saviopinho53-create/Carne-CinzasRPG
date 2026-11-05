@@ -37,6 +37,7 @@ const bibliotecaVazia = $("biblioteca-vazia");
 const etapaTipo = $("etapa-tipo");
 const etapaArquetipo = $("etapa-arquetipo");
 const etapaAtributos = $("etapa-atributos");
+const etapaPericias = $("etapa-pericias");
 
 const botaoSalvar = $("salvar-personagem");
 const botaoEditar = $("editar-personagem");
@@ -46,6 +47,8 @@ const mensagemSalvamento = $("mensagem-salvamento");
 const botaoContinuarTipo = $("continuar-tipo");
 const botaoContinuarArquetipo = $("continuar-arquetipo");
 const botaoContinuarAtributos = $("continuar-atributos");
+const botaoContinuarPericias = $("continuar-pericias");
+const botaoVoltarAtributos = $("voltar-atributos");
 
 const cartoesTipo = document.querySelectorAll(".cartao-tipo");
 const cartoesArquetipo = document.querySelectorAll(".cartao-arquetipo");
@@ -105,6 +108,7 @@ const partesCriador = [
   etapaTipo,
   etapaArquetipo,
   etapaAtributos,
+  etapaPericias,
   resumo
 ];
 
@@ -996,7 +1000,15 @@ botaoSalvar.addEventListener("click", () => {
     "Sobrevivente salvo! Ele já está na biblioteca."
   );
 });
+// ==========================================
+// V0.4 - NAVEGAÇÃO DAS PERÍCIAS
+// ==========================================
 
+botaoVoltarAtributos.addEventListener("click", () => {
+  if (!personagemAtualId) {
+    mostrarParte(etapaAtributos);
+  }
+});
 // ==========================================
 // 22. INICIALIZAÇÃO
 // ==========================================
