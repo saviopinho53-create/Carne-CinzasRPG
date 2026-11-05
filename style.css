@@ -402,4 +402,8 @@ nav button:focus-visible {
     transition: none;
   }
 }
-
+#etapa-tipo.escondido,
+#form-personagem.escondido,
+#resumo-personagem.escondido {
+  display: none;
+}
