@@ -1477,6 +1477,52 @@ button.cartao-pericia:focus-visible,
   padding: 12px;
 }
 
+/* ==========================================
+   V0.5 - PERÍCIAS NA FICHA
+   ========================================== */
+
+.ficha-pericias {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ficha-pericias-titulo {
+  margin-bottom: 8px;
+}
+
+.ficha-pericias-contador {
+  margin-bottom: 16px;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+.ficha-pericias-lista {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(180px, 1fr)
+  );
+  gap: 10px;
+}
+
+.ficha-pericias-lista .cartao-pericia {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.ficha-pericias-lista .pericia-expert {
+  border-color: #c49a45;
+  background: rgba(196, 154, 69, 0.12);
+}
+
+.ficha-pericias-lista .pericia-expert .pericia-grau {
+  color: #e8bc66;
+  font-weight: bold;
+}
+
 .grupo-categoria-pericia[open] {
   border-color: #a33;
 }
