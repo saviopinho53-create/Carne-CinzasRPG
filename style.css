@@ -1235,3 +1235,205 @@ nav button:focus-visible {
   margin: 12px 0;
 }
 
+/* ==========================================
+   CARNE & CINZAS RPG
+   ETAPA 5: PERÍCIAS - V0.4
+   ========================================== */
+
+#etapa-pericias {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#etapa-pericias.escondido {
+  display: none;
+}
+
+/* Cabeçalho */
+
+.pericias-cabecalho {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.pericias-cabecalho .subtitulo {
+  color: #c45c45;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.pericias-cabecalho h2 {
+  color: #f1eee9;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.pericias-cabecalho p {
+  color: #a9a49d;
+  line-height: 1.6;
+}
+
+/* Seções */
+
+.pericias-secao {
+  background-color: #242828;
+  border: 1px solid #3a403f;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.pericias-secao h3 {
+  color: #f1eee9;
+  font-size: 19px;
+  margin: 0 0 12px;
+}
+
+.pericias-explicacao {
+  color: #a9a49d;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+/* Lista de perícias */
+
+.pericias-lista {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 240px), 1fr)
+  );
+  gap: 12px;
+}
+
+/* Cartões */
+
+.cartao-pericia {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 16px;
+  background-color: #303635;
+
+  border: 1px solid #454c4a;
+  border-radius: 10px;
+
+  color: #f1eee9;
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cartao-pericia.selecionado {
+  background-color: #49302b;
+  border-color: #c45c45;
+}
+
+.cartao-pericia.fixo {
+  border-color: #6b6350;
+}
+
+/* Informações da perícia */
+
+.pericia-nome {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.pericia-grau {
+  color: #d6a39a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Cartões clicáveis */
+
+button.cartao-pericia {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.cartao-pericia:hover:not(:disabled) {
+  border-color: #c45c45;
+}
+
+button.cartao-pericia:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Navegação */
+
+.pericias-acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.pericias-acoes button {
+  flex: 1;
+  min-height: 48px;
+}
+
+/* Foco acessível */
+
+button.cartao-pericia:focus-visible,
+.pericias-acoes button:focus-visible {
+  outline: 2px solid #f1b09e;
+  outline-offset: 3px;
+}
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  .pericias-cabecalho h2 {
+    font-size: 24px;
+  }
+
+  .pericias-secao {
+    padding: 18px;
+  }
+
+  .pericias-secao h3 {
+    font-size: 17px;
+  }
+
+  .pericias-lista {
+    grid-template-columns: 1fr;
+  }
+
+  .cartao-pericia {
+    padding: 14px;
+  }
+
+  .pericias-acoes {
+    flex-direction: column;
+  }
+
+  .pericias-acoes button {
+    width: 100%;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cartao-pericia {
+    transition: none;
+  }
+
+}
+
