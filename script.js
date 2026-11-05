@@ -1436,8 +1436,14 @@ function renderizarPericiasArquetipo() {
     const grupo = document.createElement("div");
     grupo.className = "grupo-escolha-pericia";
 
-    const titulo = document.createElement("h4");
-    titulo.textContent = `Escolha ${indice + 1}`;
+   const titulo = document.createElement("h4");
+
+    const numeroEscolha = regras
+   .slice(0, indice + 1)
+   .filter(opcoes => opcoes.length > 1)
+   .length;
+
+   titulo.textContent = `Perícia adicional ${numeroEscolha}`;
 
     const listaGrupo = document.createElement("div");
     listaGrupo.className = "pericias-lista";
