@@ -274,3 +274,132 @@ nav button:focus-visible {
 #personagens:not(.escondido) #resumo-personagem:not(.escondido) {
   display: block;
 }
+
+/* ==================================
+   CRIADOR: SELEÇÃO DE TIPO
+================================== */
+
+#etapa-tipo {
+  margin-top: 30px;
+}
+
+#etapa-tipo h3 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+#etapa-tipo > p {
+  color: var(--secundario);
+  line-height: 1.6;
+}
+
+.lista-tipos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin: 25px 0;
+}
+
+/* CARTÕES */
+
+.cartao-tipo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  min-height: 140px;
+  padding: 22px;
+
+  background: var(--cartao);
+  color: var(--texto);
+
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.cartao-tipo strong {
+  font-size: 20px;
+}
+
+.cartao-tipo span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--secundario);
+}
+
+/* EFEITOS */
+
+.cartao-tipo:hover {
+  border-color: var(--destaque);
+  transform: translateY(-3px);
+}
+
+.cartao-tipo:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+/* TIPO SELECIONADO */
+
+.cartao-tipo.selecionado {
+  border: 2px solid var(--destaque);
+  background: #352a27;
+}
+
+#tipo-escolhido {
+  text-align: center;
+  margin: 20px 0;
+  color: var(--destaque);
+  font-weight: bold;
+}
+
+/* BOTÕES DE NAVEGAÇÃO */
+
+.botao-secundario {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+
+  background: transparent;
+  color: var(--texto);
+
+  border: 1px solid var(--borda);
+  border-radius: 7px;
+
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.botao-secundario:hover {
+  border-color: var(--destaque);
+}
+
+.botao-principal:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* CELULARES */
+
+@media (max-width: 480px) {
+  .lista-tipos {
+    grid-template-columns: 1fr;
+  }
+
+  .cartao-tipo {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-tipo {
+    transition: none;
+  }
+}
+
