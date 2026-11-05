@@ -618,8 +618,9 @@ function carregarBiblioteca() {
 // FIM DA PARTE 2
 // ==========================================
 
+
  // ==========================================
- // PARTE 3 - BIBLIOTECA E FICHA
+ // PARTE 3 - BIBLIOTECA E FICHA V0.5
  // ==========================================
 
 // ==========================================
@@ -655,8 +656,6 @@ function renderizarBiblioteca() {
 
     cartao.appendChild(nome);
 
-    // Detalhes do personagem
-
     const detalhes = document.createElement("div");
     detalhes.className = "sobrevivente-detalhes";
 
@@ -674,8 +673,6 @@ function renderizarBiblioteca() {
 
     cartao.appendChild(detalhes);
 
-    // História resumida
-
     const historia = adicionarTexto(
       "p",
       "sobrevivente-historia",
@@ -684,8 +681,6 @@ function renderizarBiblioteca() {
     );
 
     cartao.appendChild(historia);
-
-    // Botões
 
     const acoes = document.createElement("div");
     acoes.className = "sobrevivente-acoes";
@@ -773,7 +768,7 @@ function criarNovoPersonagem() {
 
   atributos = { ...valoresIniciais };
 
-  // Reiniciar perícias da versão 0.4
+  // Reiniciar perícias e Expertise
 
   escolhasPericiasArquetipo = [];
   escolhasPericiasTipo = [];
@@ -781,12 +776,14 @@ function criarNovoPersonagem() {
 
   botaoContinuarPericias.disabled = true;
 
-  // Limpar elementos dinâmicos de perícias
+  // Limpar elementos dinâmicos
 
   $("pericias-fixas")?.replaceChildren();
   $("pericias-escolhas")?.replaceChildren();
   $("pericias-resumo")?.replaceChildren();
+
   $("grupo-pericias-tipo")?.remove();
+  $("grupo-expertise")?.remove();
 
   formulario.reset();
 
@@ -809,7 +806,152 @@ $("criar-novo-personagem").addEventListener(
 );
 
 // ==========================================
-// 11. PREENCHER FICHA
+// 11. EXIBIÇÃO DAS PERÍCIAS NA FICHA
+// ==========================================
+
+// Normalizar dados para manter compatibilidade
+// com personagens antigos e futuras habilidades.
+
+function obterDadosPericias(personagem) {
+  const dados = personagem.pericias || {};
+
+  const arquetipo = Array.isArray(dados.arquetipo)
+    ? dados.arquetipo.filter(Boolean)
+    : [];
+
+  const tipo = Array.isArray(dados.tipo)
+    ? dados.tipo.filter(Boolean)
+    : [];
+
+  const treinadas = [
+    ...new Set([...arquetipo, ...tipo])
+  ];
+
+  // Atualmente, Expertise é uma string.
+  // Futuramente, poderá ser um array.
+
+  const expertises = Array.isArray(dados.expertise)
+    ? dados.expertise.filter(Boolean)
+    : dados.expertise
+      ? [dados.expertise]
+      : [];
+
+  return {
+    treinadas,
+    expertises: [
+      ...new Set(
+        expertises.filter(nome =>
+          treinadas.includes(nome)
+        )
+      )
+    ]
+  };
+}
+
+function renderizarPericiasFicha(personagem) {
+  let secao = $("ficha-pericias");
+
+  if (!secao) {
+    secao = document.createElement("section");
+    secao.id = "ficha-pericias";
+    secao.className = "ficha-pericias";
+
+    // Adicionar ao resumo sem alterar o HTML
+
+    const acoesResumo = botaoSalvar.parentElement;
+
+    if (
+      acoesResumo &&
+      acoesResumo.parentElement === resumo
+    ) {
+      resumo.insertBefore(secao, acoesResumo);
+    } else {
+      resumo.appendChild(secao);
+    }
+  }
+
+  secao.replaceChildren();
+
+  const titulo = adicionarTexto(
+    "h3",
+    "ficha-pericias-titulo",
+    "Perícias e Expertise"
+  );
+
+  secao.appendChild(titulo);
+
+  const dados = obterDadosPericias(personagem);
+
+  if (dados.treinadas.length === 0) {
+    const aviso = adicionarTexto(
+      "p",
+      "ficha-pericias-vazia",
+      "Este sobrevivente não possui perícias registradas."
+    );
+
+    secao.appendChild(aviso);
+    return;
+  }
+
+  const contador = adicionarTexto(
+    "p",
+    "ficha-pericias-contador",
+    `${dados.treinadas.length} perícias treinadas | ` +
+    `${dados.expertises.length} Expertise`
+  );
+
+  secao.appendChild(contador);
+
+  const listaPericias = document.createElement("div");
+  listaPericias.className = "ficha-pericias-lista";
+
+  // Exibir primeiro as Expertises
+
+  const ordenadas = [...dados.treinadas].sort(
+    (a, b) => {
+      const aExpert = dados.expertises.includes(a);
+      const bExpert = dados.expertises.includes(b);
+
+      if (aExpert !== bExpert) {
+        return aExpert ? -1 : 1;
+      }
+
+      return a.localeCompare(b, "pt-BR");
+    }
+  );
+
+  ordenadas.forEach((nome) => {
+    const expert = dados.expertises.includes(nome);
+
+    const cartao = document.createElement("div");
+    cartao.className = "cartao-pericia";
+
+    if (expert) {
+      cartao.classList.add("selecionado");
+      cartao.classList.add("pericia-expert");
+    }
+
+    const texto = adicionarTexto(
+      "span",
+      "pericia-nome",
+      nome
+    );
+
+    const grau = adicionarTexto(
+      "span",
+      "pericia-grau",
+      expert ? "Expert" : "Treinado"
+    );
+
+    cartao.append(texto, grau);
+    listaPericias.appendChild(cartao);
+  });
+
+  secao.appendChild(listaPericias);
+}
+
+// ==========================================
+// 12. PREENCHER FICHA
 // ==========================================
 
 function preencherResumo(p) {
@@ -829,16 +971,20 @@ function preencherResumo(p) {
   Object.entries(campos).forEach(([id, valor]) => {
     $(id).textContent = valor;
   });
+
+  // Exibir perícias e Expertise
+
+  renderizarPericiasFicha(p);
 }
 
 function preencherFormulario(p) {
   $("nome").value = p.nome;
   $("idade").value = p.idade;
-  $("descricao").value = p.descricao;
+  $("descricao").value = p.descricao || "";
 }
 
 // ==========================================
-// 12. ABRIR PERSONAGEM SALVO
+// 13. ABRIR PERSONAGEM SALVO
 // ==========================================
 
 function abrirPersonagem(id) {
@@ -859,9 +1005,6 @@ function abrirPersonagem(id) {
 
   atributos = { ...personagem.atributos };
 
-  // Restaurar perícias, se existirem.
-  // Personagens antigos continuam compatíveis.
-
   escolhasPericiasArquetipo = [
     ...(personagem.pericias?.arquetipo || [])
   ];
@@ -870,8 +1013,12 @@ function abrirPersonagem(id) {
     ...(personagem.pericias?.tipo || [])
   ];
 
-  periciaExpertise =
-    personagem.pericias?.expertise || null;
+  const expertiseSalva =
+    personagem.pericias?.expertise;
+
+  periciaExpertise = Array.isArray(expertiseSalva)
+    ? expertiseSalva[0] || null
+    : expertiseSalva || null;
 
   preencherFormulario(personagem);
   preencherResumo(personagem);
@@ -888,7 +1035,7 @@ function abrirPersonagem(id) {
 }
 
 // ==========================================
-// 13. EXCLUIR PERSONAGEM
+// 14. EXCLUIR PERSONAGEM
 // ==========================================
 
 function excluirPersonagem(id) {
@@ -920,8 +1067,6 @@ function excluirPersonagem(id) {
 
   sobreviventes = novaLista;
 
-  // Evitar que um registro antigo reapareça
-
   if (personagem.origem === CHAVE_ANTIGA) {
     try {
       localStorage.removeItem(CHAVE_ANTIGA);
@@ -937,13 +1082,13 @@ function excluirPersonagem(id) {
 }
 
 // ==========================================
-// 14. MONTAR PERSONAGEM
+// 15. MONTAR PERSONAGEM
 // ==========================================
 
 function montarPersonagem() {
   return {
     id: gerarId(),
-    versao: 2,
+    versao: 3,
 
     nome: $("nome").value.trim(),
     idade: $("idade").value,
@@ -954,8 +1099,6 @@ function montarPersonagem() {
 
     atributos: { ...atributos },
 
-    // Perícias da versão 0.4
-
     pericias: {
       arquetipo: [...escolhasPericiasArquetipo],
       tipo: [...escolhasPericiasTipo],
@@ -965,7 +1108,7 @@ function montarPersonagem() {
 }
 
 // ==========================================
-// FIM DA PARTE 3
+// FIM DA PARTE 3 - V0.5
 // ==========================================
 
  // ==========================================
