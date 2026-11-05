@@ -265,3 +265,12 @@ nav button:focus-visible {
 #resumo-personagem.escondido {
   display: none;
 }
+/* Correção da visibilidade do formulário */
+
+#personagens:not(.escondido) #form-personagem:not(.escondido) {
+  display: block;
+}
+
+#personagens:not(.escondido) #resumo-personagem:not(.escondido) {
+  display: block;
+}
