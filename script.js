@@ -1253,9 +1253,10 @@ botaoSalvar.addEventListener("click", () => {
     "Sobrevivente salvo! Ele já está na biblioteca."
   );
 });
-// ==========================================
-// V0.4 - NAVEGAÇÃO DAS PERÍCIAS
-// ==========================================
+
+ // ==========================================
+ // V0.4 - NAVEGAÇÃO DAS PERÍCIAS
+ // ==========================================
 
 botaoVoltarAtributos.addEventListener("click", () => {
   if (!personagemAtualId) {
@@ -1301,98 +1302,6 @@ function criarCartaoPericia(nome, selecionado, aoClicar) {
   return botao;
 }
 
-function renderizarPericiasArquetipo() {
-  const regras = obterPericiasArquetipo();
-
-  const fixas = $("pericias-fixas");
-  const escolhas = $("pericias-escolhas");
-  const instrucoes = $("pericias-instrucoes");
-  const resumoPericias = $("pericias-resumo");
-
-  fixas.replaceChildren();
-  escolhas.replaceChildren();
-  resumoPericias.replaceChildren();
-
-  escolhasPericiasArquetipo = [];
-
-  instrucoes.textContent =
-    "Escolha as perícias concedidas pelo seu Arquétipo.";
-
-  regras.forEach((opcoes, indice) => {
-    // Perícia fixa
-    if (opcoes.length === 1) {
-      const nome = opcoes[0];
-
-      escolhasPericiasArquetipo[indice] = nome;
-
-      const cartao = document.createElement("div");
-      cartao.className = "cartao-pericia fixo";
-
-      const texto = document.createElement("span");
-      texto.className = "pericia-nome";
-      texto.textContent = nome;
-
-      const grau = document.createElement("span");
-      grau.className = "pericia-grau";
-      grau.textContent = "Treinado";
-
-      cartao.append(texto, grau);
-      fixas.appendChild(cartao);
-
-      return;
-    }
-
-    // Escolha entre várias opções
-    const grupo = document.createElement("div");
-    grupo.className = "grupo-escolha-pericia";
-
-    const titulo = document.createElement("h4");
-    titulo.textContent = `Escolha ${indice + 1}`;
-
-    grupo.appendChild(titulo);
-
-    const listaGrupo = document.createElement("div");
-    listaGrupo.className = "pericias-lista";
-
-    const atualizarGrupo = () => {
-      listaGrupo.replaceChildren();
-
-      opcoes.forEach((nome) => {
-        const selecionado =
-          escolhasPericiasArquetipo[indice] === nome;
-
-        const jaEscolhida =
-          escolhasPericiasArquetipo.some(
-            (escolha, outroIndice) =>
-              outroIndice !== indice && escolha === nome
-          );
-
-        if (jaEscolhida) {
-          return;
-        }
-
-        const cartao = criarCartaoPericia(
-          nome,
-          selecionado,
-          () => {
-            escolhasPericiasArquetipo[indice] = nome;
-            renderizarPericiasArquetipoSemReset();
-          }
-        );
-
-        listaGrupo.appendChild(cartao);
-      });
-    };
-
-    grupo.appendChild(listaGrupo);
-    escolhas.appendChild(grupo);
-
-    atualizarGrupo();
-  });
-
-  atualizarResumoPericiasArquetipo();
-}
-
 function atualizarResumoPericiasArquetipo() {
   const resumoPericias = $("pericias-resumo");
 
@@ -1417,34 +1326,114 @@ function atualizarResumoPericiasArquetipo() {
     });
 }
 
+function renderizarPericiasArquetipo() {
+  const regras = obterPericiasArquetipo();
 
-function renderizarPericiasArquetipoSemReset() {
-  const escolhasAtuais = [...escolhasPericiasArquetipo];
+  const fixas = $("pericias-fixas");
+  const escolhas = $("pericias-escolhas");
+  const instrucoes = $("pericias-instrucoes");
 
-  renderizarPericiasArquetipo();
+  fixas.replaceChildren();
+  escolhas.replaceChildren();
 
-  escolhasPericiasArquetipo = escolhasAtuais;
+  instrucoes.textContent =
+    "Escolha as perícias concedidas pelo seu Arquétipo.";
 
-  document
-    .querySelectorAll(".grupo-escolha-pericia")
-    .forEach((grupo, indiceVisual) => {
-      const botoes = grupo.querySelectorAll("button");
+  // Preencher automaticamente as perícias fixas
+  regras.forEach((opcoes, indice) => {
+    if (opcoes.length === 1) {
+      escolhasPericiasArquetipo[indice] = opcoes[0];
+    }
+  });
 
-      botoes.forEach((botao) => {
-        const nome = botao.querySelector(".pericia-nome").textContent;
-        const selecionado =
-          escolhasPericiasArquetipo.includes(nome);
+  // Renderizar os grupos de escolha
+  regras.forEach((opcoes, indice) => {
+    if (opcoes.length === 1) {
+      const cartao = document.createElement("div");
+      cartao.className = "cartao-pericia fixo";
 
-        botao.classList.toggle("selecionado", selecionado);
-        botao.setAttribute("aria-pressed", String(selecionado));
+      const nome = document.createElement("span");
+      nome.className = "pericia-nome";
+      nome.textContent = opcoes[0];
 
-        botao.querySelector(".pericia-grau").textContent =
-          selecionado ? "Selecionada" : "Escolher";
-      });
+      const grau = document.createElement("span");
+      grau.className = "pericia-grau";
+      grau.textContent = "Treinado";
+
+      cartao.append(nome, grau);
+      fixas.appendChild(cartao);
+      return;
+    }
+
+    const grupo = document.createElement("div");
+    grupo.className = "grupo-escolha-pericia";
+
+    const titulo = document.createElement("h4");
+    titulo.textContent = `Escolha ${indice + 1}`;
+
+    const listaGrupo = document.createElement("div");
+    listaGrupo.className = "pericias-lista";
+
+    opcoes.forEach((nome) => {
+      const jaEscolhida = escolhasPericiasArquetipo.some(
+        (escolha, outroIndice) =>
+          outroIndice !== indice && escolha === nome
+      );
+
+      if (jaEscolhida) return;
+
+      const selecionado =
+        escolhasPericiasArquetipo[indice] === nome;
+
+      const cartao = criarCartaoPericia(
+        nome,
+        selecionado,
+        () => {
+          escolhasPericiasArquetipo[indice] =
+            selecionado ? undefined : nome;
+
+          renderizarPericiasArquetipo();
+        }
+      );
+
+      listaGrupo.appendChild(cartao);
     });
+
+    grupo.append(titulo, listaGrupo);
+    escolhas.appendChild(grupo);
+  });
 
   atualizarResumoPericiasArquetipo();
 }
+
+// ==========================================
+// V0.4 - PERÍCIAS DO TIPO
+// ==========================================
+
+function obterOpcoesPericiasTipo() {
+  const regras = REGRAS_TIPOS[tipoSelecionado];
+
+  if (!regras) {
+    return [];
+  }
+
+  const jaTreinadas =
+    escolhasPericiasArquetipo.filter(Boolean);
+
+  return regras.opcoes.filter(
+    (nome) => !jaTreinadas.includes(nome)
+  );
+}
+
+function obterTreinamentosAtuais() {
+  return [
+    ...new Set([
+      ...escolhasPericiasArquetipo.filter(Boolean),
+      ...escolhasPericiasTipo.filter(Boolean)
+    ])
+  ];
+}
+
 
 // ==========================================
 // 22. INICIALIZAÇÃO
