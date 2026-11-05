@@ -1593,3 +1593,28 @@ button.cartao-pericia:focus-visible,
   }
 }
 
+/* V0.6 - PERÍCIAS INTEGRADAS À FICHA */
+
+#ficha-pericias {
+  margin-top: 0;
+  padding-top: 20px;
+  border-top: none;
+}
+
+#ficha-pericias .ficha-pericias-lista {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(140px, 1fr)
+  );
+  gap: 10px;
+}
+
+#ficha-pericias .cartao-pericia {
+  min-width: 0;
+}
+
+#ficha-pericias .pericia-nome {
+  overflow-wrap: anywhere;
+}
+
