@@ -921,3 +921,21 @@ nav button:focus-visible {
 
 }
 
+/* SALVAMENTO DE PERSONAGENS */
+
+.mensagem-salvamento {
+  padding: 0 24px 20px;
+  color: #a9a49d;
+  font-size: 14px;
+  text-align: center;
+}
+
+#cancelar-edicao.escondido {
+  display: none;
+}
+
+#salvar-personagem:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
