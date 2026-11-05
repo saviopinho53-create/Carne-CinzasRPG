@@ -939,3 +939,290 @@ nav button:focus-visible {
   cursor: not-allowed;
 }
 
+/* ==========================================
+   CARNE & CINZAS RPG
+   BIBLIOTECA DE SOBREVIVENTES - V0.3
+   ========================================== */
+
+/* Container principal */
+
+#biblioteca-sobreviventes {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 32px;
+}
+
+/* Cabeçalho */
+
+.biblioteca-cabecalho {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.biblioteca-cabecalho .subtitulo {
+  color: #c45c45;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.biblioteca-cabecalho h2 {
+  color: #f1eee9;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.biblioteca-cabecalho p {
+  color: #a9a49d;
+  line-height: 1.6;
+}
+
+/* Botão de criar personagem */
+
+#criar-novo-personagem {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 28px;
+  padding: 16px 20px;
+
+  background-color: #c45c45;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+#criar-novo-personagem:hover {
+  background-color: #d46a52;
+  transform: translateY(-2px);
+}
+
+#criar-novo-personagem:active {
+  transform: translateY(0);
+}
+
+/* Lista de sobreviventes */
+
+.lista-sobreviventes {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 260px), 1fr)
+  );
+  gap: 18px;
+  margin-top: 24px;
+}
+
+/* Cartão individual */
+
+.cartao-sobrevivente {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 22px;
+  background-color: #242828;
+
+  border: 1px solid #3a403f;
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cartao-sobrevivente:hover {
+  border-color: #c45c45;
+  transform: translateY(-3px);
+}
+
+/* Informações do personagem */
+
+.sobrevivente-nome {
+  color: #f1eee9;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.sobrevivente-detalhes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sobrevivente-detalhes span {
+  display: inline-block;
+  padding: 6px 10px;
+
+  background-color: #323837;
+  color: #c8c3bb;
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* História resumida */
+
+.sobrevivente-historia {
+  color: #a9a49d;
+  font-size: 14px;
+  line-height: 1.6;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* Ações do cartão */
+
+.sobrevivente-acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.sobrevivente-acoes button {
+  padding: 12px;
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Abrir ficha */
+
+.abrir-sobrevivente {
+  flex: 1;
+
+  background-color: #c45c45;
+  color: #ffffff;
+
+  border: none;
+}
+
+.abrir-sobrevivente:hover {
+  background-color: #d46a52;
+}
+
+/* Excluir personagem */
+
+.excluir-sobrevivente {
+  background-color: transparent;
+  color: #d6a39a;
+
+  border: 1px solid #70463e;
+}
+
+.excluir-sobrevivente:hover {
+  background-color: #49302b;
+}
+
+/* Biblioteca vazia */
+
+.biblioteca-vazia {
+  padding: 40px 20px;
+  margin-top: 24px;
+
+  text-align: center;
+
+  background-color: #242828;
+  border: 1px dashed #505756;
+  border-radius: 12px;
+
+  color: #a9a49d;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Ocultar biblioteca vazia quando necessário */
+
+.biblioteca-vazia.escondido {
+  display: none;
+}
+
+/* Foco acessível */
+
+#criar-novo-personagem:focus-visible,
+.sobrevivente-acoes button:focus-visible {
+  outline: 2px solid #f1b09e;
+  outline-offset: 3px;
+}
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  #biblioteca-sobreviventes {
+    padding: 0 4px;
+  }
+
+  .biblioteca-cabecalho h2 {
+    font-size: 24px;
+  }
+
+  .biblioteca-cabecalho p {
+    font-size: 14px;
+  }
+
+  .lista-sobreviventes {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cartao-sobrevivente {
+    padding: 18px;
+  }
+
+  .sobrevivente-nome {
+    font-size: 18px;
+  }
+
+  #criar-novo-personagem {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+}
+
+/* Respeitar preferência por movimento reduzido */
+
+@media (prefers-reduced-motion: reduce) {
+
+  #criar-novo-personagem,
+  .cartao-sobrevivente,
+  .sobrevivente-acoes button {
+    transition: none;
+  }
+
+  #criar-novo-personagem:hover,
+  .cartao-sobrevivente:hover {
+    transform: none;
+  }
+
+}
+
