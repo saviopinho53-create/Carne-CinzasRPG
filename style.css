@@ -167,4 +167,8 @@ nav button:focus-visible {
     animation: none;
   }
 }
+/* Garantir que telas ocultas não apareçam */
 
+.tela.escondido {
+  display: none;
+}
