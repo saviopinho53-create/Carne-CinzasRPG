@@ -235,19 +235,6 @@ continuarArquetipo.addEventListener("click", function() {
 
 });
 
-
-  if (!arquetipoSelecionado) {
-    return;
-  }
-
-  document.getElementById("resumo-arquetipo").textContent =
-    arquetipoSelecionado;
-
-  etapaArquetipo.classList.add("escondido");
-  resumo.classList.remove("escondido");
-
-});
-
 // ==================================
 // ETAPA 4: DISTRIBUIÇÃO DE ATRIBUTOS
 // ==================================
