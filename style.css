@@ -1226,3 +1226,12 @@ nav button:focus-visible {
 
 }
 
+#biblioteca-sobreviventes.escondido,
+#voltar-biblioteca.escondido {
+  display: none;
+}
+
+#voltar-biblioteca {
+  margin: 12px 0;
+}
+
