@@ -677,6 +677,7 @@ function carregarBiblioteca() {
 
 
  
+
  // ==========================================
  // PARTE 3 - BIBLIOTECA E FICHA V0.6
  // ==========================================
@@ -882,6 +883,8 @@ function obterDadosPericias(personagem) {
     ...new Set([...arquetipo, ...tipo])
   ];
 
+  // Compatibilidade com uma ou várias Expertises
+
   const expertises = Array.isArray(dados.expertise)
     ? dados.expertise.filter(Boolean)
     : dados.expertise
@@ -901,27 +904,52 @@ function obterDadosPericias(personagem) {
 }
 
 // ==========================================
-// 12. PERÍCIAS NA FICHA
+// 12. PERÍCIAS DENTRO DA FICHA
 // ==========================================
 
 function renderizarPericiasFicha(personagem) {
+  const ficha = resumo.querySelector(
+    ".ficha-sobrevivente"
+  );
+
+  if (!ficha) {
+    console.warn(
+      "O contêiner da ficha não foi encontrado."
+    );
+    return;
+  }
+
   let secao = $("ficha-pericias");
+
+  // Caso exista uma seção antiga fora da ficha,
+  // movê-la para dentro da ficha principal.
 
   if (!secao) {
     secao = document.createElement("section");
     secao.id = "ficha-pericias";
-    secao.className = "ficha-pericias";
+  }
 
-    const acoesResumo = botaoSalvar.parentElement;
+  secao.className = "ficha-secao ficha-pericias";
+
+  // Inserir antes das ações da ficha
+
+  const acoes = ficha.querySelector(".ficha-acoes");
+
+  if (acoes) {
+    acoes.before(secao);
+  } else if (ficha.contains(botaoSalvar)) {
+    const containerAcoes = botaoSalvar.parentElement;
 
     if (
-      acoesResumo &&
-      acoesResumo.parentElement === resumo
+      containerAcoes &&
+      containerAcoes !== ficha
     ) {
-      resumo.insertBefore(secao, acoesResumo);
+      containerAcoes.before(secao);
     } else {
-      resumo.appendChild(secao);
+      botaoSalvar.before(secao);
     }
+  } else {
+    ficha.appendChild(secao);
   }
 
   secao.replaceChildren();
@@ -960,6 +988,8 @@ function renderizarPericiasFicha(personagem) {
   const listaPericias = document.createElement("div");
   listaPericias.className = "ficha-pericias-lista";
 
+  // Exibir Expertises primeiro
+
   const ordenadas = [...dados.treinadas].sort(
     (a, b) => {
       const aExpert = dados.expertises.includes(a);
@@ -980,8 +1010,10 @@ function renderizarPericiasFicha(personagem) {
     cartao.className = "cartao-pericia";
 
     if (expert) {
-      cartao.classList.add("selecionado");
-      cartao.classList.add("pericia-expert");
+      cartao.classList.add(
+        "selecionado",
+        "pericia-expert"
+      );
     }
 
     const texto = adicionarTexto(
@@ -1004,40 +1036,14 @@ function renderizarPericiasFicha(personagem) {
 }
 
 // ==========================================
-// 13. CÁLCULO DE PV E GUARDA NA FICHA
+// 13. PV, GUARDA E MOVIMENTO
 // ==========================================
 
 function renderizarSobrevivenciaFicha(personagem) {
-  let secao = $("ficha-sobrevivencia");
+  // Aproveitar os cartões já existentes no HTML.
+  // Não criar uma segunda seção de Sobrevivência.
 
-  if (!secao) {
-    secao = document.createElement("section");
-    secao.id = "ficha-sobrevivencia";
-    secao.className = "ficha-sobrevivencia";
-
-    // Posicionar antes das perícias
-
-    const secaoPericias = $("ficha-pericias");
-
-    if (secaoPericias) {
-      secaoPericias.before(secao);
-    } else {
-      const acoesResumo = botaoSalvar.parentElement;
-
-      if (
-        acoesResumo &&
-        acoesResumo.parentElement === resumo
-      ) {
-        resumo.insertBefore(secao, acoesResumo);
-      } else {
-        resumo.appendChild(secao);
-      }
-    }
-  }
-
-  secao.replaceChildren();
-
-  const corpo = Number(personagem.atributos?.corpo);
+  const corpo = personagem.atributos?.corpo;
 
   const pv = calcularPontosDeVida(
     personagem.arquetipo,
@@ -1049,42 +1055,39 @@ function renderizarSobrevivenciaFicha(personagem) {
     corpo
   );
 
-  const titulo = adicionarTexto(
-    "h3",
-    "ficha-sobrevivencia-titulo",
-    "Sobrevivência"
-  );
+  const vidaEl = $("ficha-vida");
+  const guardaEl = $("ficha-guarda");
+  const movimentoEl = $("ficha-movimento");
 
-  const grade = document.createElement("div");
-  grade.className = "ficha-sobrevivencia-grade";
-
-  function criarIndicador(nome, valor, classe) {
-    const cartao = document.createElement("div");
-    cartao.className = `indicador-sobrevivencia ${classe}`;
-
-    const rotulo = adicionarTexto(
-      "span",
-      "indicador-sobrevivencia-rotulo",
-      nome
-    );
-
-    const numero = adicionarTexto(
-      "strong",
-      "indicador-sobrevivencia-valor",
-      valor === null ? "—" : String(valor)
-    );
-
-    cartao.append(rotulo, numero);
-
-    return cartao;
+  if (vidaEl) {
+    vidaEl.textContent =
+      pv === null ? "—" : String(pv);
   }
 
-  grade.append(
-    criarIndicador("Pontos de Vida", pv, "indicador-pv"),
-    criarIndicador("Guarda", guarda, "indicador-guarda")
+  if (guardaEl) {
+    guardaEl.textContent =
+      guarda === null ? "—" : String(guarda);
+  }
+
+  if (movimentoEl) {
+    movimentoEl.textContent = "9 m";
+  }
+
+  // Remover apenas a seção duplicada gerada
+  // pela versão anterior, caso ainda exista.
+
+  const duplicada = $("ficha-sobrevivencia");
+  const ficha = resumo.querySelector(
+    ".ficha-sobrevivente"
   );
 
-  secao.append(titulo, grade);
+  if (
+    duplicada &&
+    ficha &&
+    !ficha.contains(duplicada)
+  ) {
+    duplicada.remove();
+  }
 }
 
 // ==========================================
@@ -1106,8 +1109,14 @@ function preencherResumo(p) {
   };
 
   Object.entries(campos).forEach(([id, valor]) => {
-    $(id).textContent = valor;
+    const elemento = $(id);
+
+    if (elemento) {
+      elemento.textContent = valor;
+    }
   });
+
+  // Atualizar os dados da ficha
 
   renderizarPericiasFicha(p);
   renderizarSobrevivenciaFicha(p);
@@ -1141,6 +1150,8 @@ function abrirPersonagem(id) {
 
   atributos = { ...personagem.atributos };
 
+  // Restaurar perícias
+
   escolhasPericiasArquetipo = [
     ...(personagem.pericias?.arquetipo || [])
   ];
@@ -1148,6 +1159,8 @@ function abrirPersonagem(id) {
   escolhasPericiasTipo = [
     ...(personagem.pericias?.tipo || [])
   ];
+
+  // Restaurar Expertise
 
   const expertiseSalva =
     personagem.pericias?.expertise;
@@ -1203,6 +1216,8 @@ function excluirPersonagem(id) {
 
   sobreviventes = novaLista;
 
+  // Evitar que registros antigos reapareçam
+
   if (personagem.origem === CHAVE_ANTIGA) {
     try {
       localStorage.removeItem(CHAVE_ANTIGA);
@@ -1246,6 +1261,7 @@ function montarPersonagem() {
 // ==========================================
 // FIM DA PARTE 3 - V0.6
 // ==========================================
+
 
  // ==========================================
  // PARTE 4 - CRIAÇÃO DO SOBREVIVENTE
