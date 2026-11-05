@@ -1,130 +1,295 @@
 
+"use strict";
+
+// ==========================================
 // CARNE & CINZAS RPG
-// Sistema de navegação - Versão 0.1
+// CRIADOR DE SOBREVIVENTES - V0.2
+// ==========================================
+
+// ==========================================
+// 1. NAVEGAÇÃO
+// ==========================================
 
 const telas = document.querySelectorAll(".tela");
+const botoesMenu = document.querySelectorAll("[data-destino]");
+const botoesVoltar = document.querySelectorAll(".voltar");
 
-const botoesMenu = document.querySelectorAll(
-  "[data-destino]"
-);
-
-const botoesVoltar = document.querySelectorAll(
-  ".voltar"
-);
-
-// Função para abrir uma tela
 function abrirTela(id) {
-
-  // Esconde todas as telas
   telas.forEach(function(tela) {
     tela.classList.add("escondido");
   });
 
-  // Encontra a tela desejada
   const destino = document.getElementById(id);
 
-  // Mostra a tela
   if (destino) {
     destino.classList.remove("escondido");
   }
 }
 
-// Eventos dos botões do menu
 botoesMenu.forEach(function(botao) {
-
   botao.addEventListener("click", function() {
-
-    const destino = botao.dataset.destino;
-
-    abrirTela(destino);
-
+    abrirTela(botao.dataset.destino);
   });
-
 });
 
-// Eventos dos botões de voltar
 botoesVoltar.forEach(function(botao) {
-
   botao.addEventListener("click", function() {
-
     abrirTela("inicio");
-
   });
-
 });
 
-// CRIADOR DE SOBREVIVENTES
-// Etapa 1: Identidade
+// ==========================================
+// 2. ELEMENTOS DO CRIADOR
+// ==========================================
 
 const formulario = document.getElementById("form-personagem");
 const resumo = document.getElementById("resumo-personagem");
 const editar = document.getElementById("editar-personagem");
 
-formulario.addEventListener("submit", function(evento) {
+const etapaTipo = document.getElementById("etapa-tipo");
+const etapaArquetipo = document.getElementById("etapa-arquetipo");
+const etapaAtributos = document.getElementById("etapa-atributos");
 
-  // Impede que a página recarregue
+const cartoesTipo = document.querySelectorAll(".cartao-tipo");
+const cartoesArquetipo = document.querySelectorAll(".cartao-arquetipo");
+
+const textoTipo = document.getElementById("tipo-escolhido");
+const textoArquetipo = document.getElementById("arquetipo-escolhido");
+
+const continuarTipo = document.getElementById("continuar-tipo");
+const continuarArquetipo = document.getElementById("continuar-arquetipo");
+const continuarAtributos = document.getElementById("continuar-atributos");
+
+const voltarIdentidade = document.getElementById("voltar-identidade");
+const voltarTipo = document.getElementById("voltar-tipo");
+const voltarArquetipo = document.getElementById("voltar-arquetipo");
+
+const pontosRestantes = document.getElementById("pontos-restantes");
+const reiniciarAtributos = document.getElementById("reiniciar-atributos");
+
+const botaoSalvar = document.getElementById("salvar-personagem");
+const cancelarEdicao = document.getElementById("cancelar-edicao");
+const mensagemSalvamento = document.getElementById("mensagem-salvamento");
+
+// ==========================================
+// 3. ESTADO DO PERSONAGEM
+// ==========================================
+
+const CHAVE_SALVAMENTO = "carneCinzas_personagem_v1";
+
+const TOTAL_PONTOS = 6;
+const MAX_ATRIBUTO = 3;
+const MIN_ATRIBUTO = 0;
+
+const valoresIniciais = {
+  corpo: 3,
+  mente: 2,
+  vontade: 1,
+  aparencia: 0
+};
+
+let atributos = { ...valoresIniciais };
+
+let tipoSelecionado = null;
+let arquetipoSelecionado = null;
+
+let personagemSalvo = null;
+let editandoPersonagemSalvo = false;
+
+// ==========================================
+// 4. FUNÇÕES AUXILIARES
+// ==========================================
+
+function mostrarEtapa(elemento) {
+  [
+    formulario,
+    etapaTipo,
+    etapaArquetipo,
+    etapaAtributos,
+    resumo
+  ].forEach(function(etapa) {
+    etapa.classList.add("escondido");
+  });
+
+  elemento.classList.remove("escondido");
+}
+
+function mostrarMensagem(texto) {
+  mensagemSalvamento.textContent = texto;
+}
+
+function pontosUsados() {
+  return Object.values(atributos).reduce(function(total, valor) {
+    return total + valor;
+  }, 0);
+}
+
+function atributosValidos(valores) {
+  if (!valores || typeof valores !== "object") {
+    return false;
+  }
+
+  const nomes = ["corpo", "mente", "vontade", "aparencia"];
+
+  const validos = nomes.every(function(nome) {
+    return Number.isInteger(valores[nome]) &&
+      valores[nome] >= MIN_ATRIBUTO &&
+      valores[nome] <= MAX_ATRIBUTO;
+  });
+
+  if (!validos) {
+    return false;
+  }
+
+  return nomes.reduce(function(total, nome) {
+    return total + valores[nome];
+  }, 0) === TOTAL_PONTOS;
+}
+
+function preencherResumo(personagem) {
+  document.getElementById("resumo-nome").textContent =
+    personagem.nome;
+
+  document.getElementById("resumo-idade").textContent =
+    personagem.idade;
+
+  document.getElementById("resumo-descricao").textContent =
+    personagem.descricao || "Nenhuma descrição informada.";
+
+  document.getElementById("resumo-tipo").textContent =
+    personagem.tipo;
+
+  document.getElementById("resumo-arquetipo").textContent =
+    personagem.arquetipo;
+
+  document.getElementById("resumo-corpo").textContent =
+    personagem.atributos.corpo;
+
+  document.getElementById("resumo-mente").textContent =
+    personagem.atributos.mente;
+
+  document.getElementById("resumo-vontade").textContent =
+    personagem.atributos.vontade;
+
+  document.getElementById("resumo-aparencia").textContent =
+    personagem.atributos.aparencia;
+}
+
+function preencherFormulario(personagem) {
+  document.getElementById("nome").value = personagem.nome;
+  document.getElementById("idade").value = personagem.idade;
+  document.getElementById("descricao").value =
+    personagem.descricao || "";
+}
+
+function atualizarEstadoSalvamento() {
+  botaoSalvar.textContent = personagemSalvo
+    ? "Sobrevivente salvo"
+    : "Salvar Sobrevivente";
+
+  botaoSalvar.disabled = personagemSalvo !== null;
+}
+
+// ==========================================
+// 5. ETAPA 1: IDENTIDADE
+// ==========================================
+
+formulario.addEventListener("submit", function(evento) {
   evento.preventDefault();
 
-  // Coleta as informações preenchidas
   const nome = document.getElementById("nome").value.trim();
   const idade = document.getElementById("idade").value;
   const descricao = document.getElementById("descricao").value.trim();
 
-  // Preenche o resumo
+  if (!nome || !idade) {
+    return;
+  }
+
+  // Edição de um personagem já salvo
+  if (editandoPersonagemSalvo && personagemSalvo) {
+    const atualizado = {
+      ...personagemSalvo,
+      nome: nome,
+      idade: idade,
+      descricao: descricao
+    };
+
+    if (gravarPersonagem(atualizado)) {
+      personagemSalvo = atualizado;
+      preencherResumo(personagemSalvo);
+
+      editandoPersonagemSalvo = false;
+      cancelarEdicao.classList.add("escondido");
+
+      mostrarEtapa(resumo);
+      mostrarMensagem("Informações atualizadas com sucesso!");
+    }
+
+    return;
+  }
+
+  // Primeira criação
   document.getElementById("resumo-nome").textContent = nome;
   document.getElementById("resumo-idade").textContent = idade;
   document.getElementById("resumo-descricao").textContent =
     descricao || "Nenhuma descrição informada.";
 
- // Esconde a identidade e abre a escolha do Tipo
-formulario.classList.add("escondido");
-document.getElementById("etapa-tipo")
-  .classList.remove("escondido");
-
+  mostrarEtapa(etapaTipo);
 });
 
+// Editar personagem
 editar.addEventListener("click", function() {
+  if (personagemSalvo) {
+    editandoPersonagemSalvo = true;
 
-  resumo.classList.add("escondido");
-  formulario.classList.remove("escondido");
+    preencherFormulario(personagemSalvo);
 
+    cancelarEdicao.classList.remove("escondido");
+    mostrarEtapa(formulario);
+
+    return;
+  }
+
+  // Antes do primeiro salvamento
+  editandoPersonagemSalvo = false;
+  cancelarEdicao.classList.add("escondido");
+
+  mostrarEtapa(formulario);
 });
 
-// ==================================
-// ETAPA 2: SELEÇÃO DE TIPO
-// ==================================
+// Cancelar edição de personagem salvo
+cancelarEdicao.addEventListener("click", function() {
+  if (!personagemSalvo) {
+    return;
+  }
 
-const etapaTipo = document.getElementById("etapa-tipo");
+  preencherFormulario(personagemSalvo);
 
-const cartoesTipo = document.querySelectorAll(
-  ".cartao-tipo"
-);
+  editandoPersonagemSalvo = false;
+  cancelarEdicao.classList.add("escondido");
 
-const textoTipo = document.getElementById("tipo-escolhido");
+  mostrarEtapa(resumo);
+});
 
-const continuarTipo = document.getElementById("continuar-tipo");
+// ==========================================
+// 6. ETAPA 2: TIPO
+// ==========================================
 
-const voltarIdentidade = document.getElementById(
-  "voltar-identidade"
-);
-
-// Guarda a escolha do jogador
-let tipoSelecionado = null;
-
-// Seleção dos cartões
 cartoesTipo.forEach(function(cartao) {
+  cartao.setAttribute("aria-pressed", "false");
 
   cartao.addEventListener("click", function() {
+    if (personagemSalvo) {
+      return;
+    }
 
     tipoSelecionado = cartao.dataset.tipo;
 
-    // Remove a seleção anterior
-    cartoesTipo.forEach(function(outroCartao) {
-      outroCartao.classList.remove("selecionado");
-      outroCartao.setAttribute("aria-pressed", "false");
+    cartoesTipo.forEach(function(outro) {
+      outro.classList.remove("selecionado");
+      outro.setAttribute("aria-pressed", "false");
     });
 
-    // Marca o cartão escolhido
     cartao.classList.add("selecionado");
     cartao.setAttribute("aria-pressed", "true");
 
@@ -132,65 +297,39 @@ cartoesTipo.forEach(function(cartao) {
       "Tipo selecionado: " + tipoSelecionado;
 
     continuarTipo.disabled = false;
-
   });
-
 });
 
-// Voltar à identidade
 voltarIdentidade.addEventListener("click", function() {
-
-  etapaTipo.classList.add("escondido");
-  formulario.classList.remove("escondido");
-
-});
-
-// Continuar após escolher o Tipo
-continuarTipo.addEventListener("click", function() {
-
-  if (!tipoSelecionado) {
+  if (personagemSalvo) {
     return;
   }
 
- etapaTipo.classList.add("escondido");
+  mostrarEtapa(formulario);
+});
 
-document.getElementById("etapa-arquetipo")
-  .classList.remove("escondido");
+continuarTipo.addEventListener("click", function() {
+  if (!tipoSelecionado || personagemSalvo) {
+    return;
+  }
 
-  // Adiciona o Tipo ao resumo
   document.getElementById("resumo-tipo").textContent =
     tipoSelecionado;
 
+  mostrarEtapa(etapaArquetipo);
 });
 
+// ==========================================
+// 7. ETAPA 3: ARQUÉTIPO
+// ==========================================
 
-// ==================================
-// ETAPA 3: SELEÇÃO DE ARQUÉTIPO
-// ==================================
-
-const etapaArquetipo =
-  document.getElementById("etapa-arquetipo");
-
-const cartoesArquetipo =
-  document.querySelectorAll(".cartao-arquetipo");
-
-const textoArquetipo =
-  document.getElementById("arquetipo-escolhido");
-
-const continuarArquetipo =
-  document.getElementById("continuar-arquetipo");
-
-const voltarTipo =
-  document.getElementById("voltar-tipo");
-
-let arquetipoSelecionado = null;
-
-// Selecionar Arquétipo
 cartoesArquetipo.forEach(function(cartao) {
-
   cartao.setAttribute("aria-pressed", "false");
 
   cartao.addEventListener("click", function() {
+    if (personagemSalvo) {
+      return;
+    }
 
     arquetipoSelecionado = cartao.dataset.arquetipo;
 
@@ -206,83 +345,39 @@ cartoesArquetipo.forEach(function(cartao) {
       "Arquétipo selecionado: " + arquetipoSelecionado;
 
     continuarArquetipo.disabled = false;
-
   });
-
 });
 
-// Voltar para escolher o Tipo
 voltarTipo.addEventListener("click", function() {
-  etapaArquetipo.classList.add("escondido");
-  etapaTipo.classList.remove("escondido");
-});
+  if (personagemSalvo) {
+    return;
+  }
 
-// Continuar para o resumo
+  mostrarEtapa(etapaTipo);
+});
 
 continuarArquetipo.addEventListener("click", function() {
-
-  if (!arquetipoSelecionado) {
+  if (!arquetipoSelecionado || personagemSalvo) {
     return;
   }
 
   document.getElementById("resumo-arquetipo").textContent =
     arquetipoSelecionado;
 
-  etapaArquetipo.classList.add("escondido");
-
-  document.getElementById("etapa-atributos")
-    .classList.remove("escondido");
-
+  mostrarEtapa(etapaAtributos);
 });
 
-// ==================================
-// ETAPA 4: DISTRIBUIÇÃO DE ATRIBUTOS
-// ==================================
+// ==========================================
+// 8. ETAPA 4: ATRIBUTOS
+// ==========================================
 
-const etapaAtributos =
-  document.getElementById("etapa-atributos");
-
-const pontosRestantes =
-  document.getElementById("pontos-restantes");
-
-const reiniciarAtributos =
-  document.getElementById("reiniciar-atributos");
-
-const voltarArquetipo =
-  document.getElementById("voltar-arquetipo");
-
-const continuarAtributos =
-  document.getElementById("continuar-atributos");
-
-// Distribuição inicial: 3, 2, 1, 0
-const valoresIniciais = {
-  corpo: 3,
-  mente: 2,
-  vontade: 1,
-  aparencia: 0
-};
-
-let atributos = { ...valoresIniciais };
-
-const TOTAL_PONTOS = 6;
-const MAX_ATRIBUTO = 3;
-const MIN_ATRIBUTO = 0;
-
-// Atualiza os valores na tela
 function atualizarAtributos() {
-
-  let pontosUsados = Object.values(atributos)
-    .reduce(function(total, valor) {
-      return total + valor;
-    }, 0);
-
-  let restantes = TOTAL_PONTOS - pontosUsados;
+  const restantes = TOTAL_PONTOS - pontosUsados();
 
   pontosRestantes.textContent = restantes;
 
   document.querySelectorAll(".cartao-atributo")
     .forEach(function(cartao) {
-
       const nome = cartao.dataset.atributo;
       const valor = atributos[nome];
 
@@ -297,21 +392,22 @@ function atualizarAtributos() {
 
       textoValor.textContent = valor;
 
-      diminuir.disabled = valor <= MIN_ATRIBUTO;
+      diminuir.disabled =
+        personagemSalvo !== null ||
+        valor <= MIN_ATRIBUTO;
 
       aumentar.disabled =
-        valor >= MAX_ATRIBUTO || restantes === 0;
-
+        personagemSalvo !== null ||
+        valor >= MAX_ATRIBUTO ||
+        restantes === 0;
     });
 
-  continuarAtributos.disabled = restantes !== 0;
-
+  continuarAtributos.disabled =
+    personagemSalvo !== null || restantes !== 0;
 }
 
-// Botões de aumentar e diminuir
 document.querySelectorAll(".cartao-atributo")
   .forEach(function(cartao) {
-
     const nome = cartao.dataset.atributo;
 
     const diminuir =
@@ -321,78 +417,201 @@ document.querySelectorAll(".cartao-atributo")
       cartao.querySelector(".aumentar");
 
     diminuir.addEventListener("click", function() {
+      if (personagemSalvo) {
+        return;
+      }
 
       if (atributos[nome] > MIN_ATRIBUTO) {
         atributos[nome]--;
         atualizarAtributos();
       }
-
     });
 
     aumentar.addEventListener("click", function() {
-
-      const pontosUsados =
-        Object.values(atributos).reduce(function(a, b) {
-          return a + b;
-        }, 0);
+      if (personagemSalvo) {
+        return;
+      }
 
       if (
         atributos[nome] < MAX_ATRIBUTO &&
-        pontosUsados < TOTAL_PONTOS
+        pontosUsados() < TOTAL_PONTOS
       ) {
         atributos[nome]++;
         atualizarAtributos();
       }
-
     });
-
   });
 
-// Reiniciar distribuição
 reiniciarAtributos.addEventListener("click", function() {
-
-  atributos = { ...valoresIniciais };
-
-  atualizarAtributos();
-
-});
-
-// Voltar aos Arquétipos
-voltarArquetipo.addEventListener("click", function() {
-
-  etapaAtributos.classList.add("escondido");
-  etapaArquetipo.classList.remove("escondido");
-
-});
-
-// Finalizar personagem
-continuarAtributos.addEventListener("click", function() {
-
-  const pontosUsados =
-    Object.values(atributos).reduce(function(a, b) {
-      return a + b;
-    }, 0);
-
-  if (pontosUsados !== TOTAL_PONTOS) {
+  if (personagemSalvo) {
     return;
   }
 
-  document.getElementById("resumo-corpo").textContent =
-    atributos.corpo;
-
-  document.getElementById("resumo-mente").textContent =
-    atributos.mente;
-
-  document.getElementById("resumo-vontade").textContent =
-    atributos.vontade;
-
-  document.getElementById("resumo-aparencia").textContent =
-    atributos.aparencia;
-
-  etapaAtributos.classList.add("escondido");
-  resumo.classList.remove("escondido");
-
+  atributos = { ...valoresIniciais };
+  atualizarAtributos();
 });
 
-// Inicializa os atributos
+voltarArquetipo.addEventListener("click", function() {
+  if (personagemSalvo) {
+    return;
+  }
+
+  mostrarEtapa(etapaArquetipo);
+});
+
+continuarAtributos.addEventListener("click", function() {
+  if (personagemSalvo || !atributosValidos(atributos)) {
+    return;
+  }
+
+  const personagem = montarPersonagem();
+
+  preencherResumo(personagem);
+  mostrarEtapa(resumo);
+
+  mostrarMensagem(
+    "Ficha pronta! Clique em Salvar Sobrevivente para guardar."
+  );
+});
+
+// ==========================================
+// 9. SALVAMENTO LOCAL
+// ==========================================
+
+function montarPersonagem() {
+  return {
+    versao: 1,
+    nome: document.getElementById("nome").value.trim(),
+    idade: document.getElementById("idade").value,
+    descricao: document.getElementById("descricao").value.trim(),
+    tipo: tipoSelecionado,
+    arquetipo: arquetipoSelecionado,
+    atributos: { ...atributos }
+  };
+}
+
+function gravarPersonagem(personagem) {
+  try {
+    localStorage.setItem(
+      CHAVE_SALVAMENTO,
+      JSON.stringify(personagem)
+    );
+
+    return true;
+  } catch (erro) {
+    console.error("Erro ao salvar personagem:", erro);
+
+    mostrarMensagem(
+      "Não foi possível salvar. Verifique o armazenamento do navegador."
+    );
+
+    return false;
+  }
+}
+
+function personagemValido(personagem) {
+  if (!personagem || typeof personagem !== "object") {
+    return false;
+  }
+
+  return (
+    typeof personagem.nome === "string" &&
+    personagem.nome.trim().length > 0 &&
+    typeof personagem.idade === "string" &&
+    personagem.idade.trim().length > 0 &&
+    typeof personagem.descricao === "string" &&
+    typeof personagem.tipo === "string" &&
+    personagem.tipo.length > 0 &&
+    typeof personagem.arquetipo === "string" &&
+    personagem.arquetipo.length > 0 &&
+    atributosValidos(personagem.atributos)
+  );
+}
+
+// Primeiro salvamento
+botaoSalvar.addEventListener("click", function() {
+  if (personagemSalvo) {
+    return;
+  }
+
+  if (!tipoSelecionado || !arquetipoSelecionado) {
+    mostrarMensagem("Complete todas as etapas antes de salvar.");
+    return;
+  }
+
+  if (!atributosValidos(atributos)) {
+    mostrarMensagem("A distribuição de atributos é inválida.");
+    return;
+  }
+
+  const personagem = montarPersonagem();
+
+  if (!personagemValido(personagem)) {
+    mostrarMensagem("Confira os dados do personagem.");
+    return;
+  }
+
+  if (gravarPersonagem(personagem)) {
+    personagemSalvo = personagem;
+
+    atualizarEstadoSalvamento();
+    atualizarAtributos();
+
+    mostrarMensagem("Sobrevivente salvo com sucesso!");
+  }
+});
+
+// ==========================================
+// 10. RECUPERAR PERSONAGEM SALVO
+// ==========================================
+
+function recuperarPersonagem() {
+  let dados;
+
+  try {
+    dados = localStorage.getItem(CHAVE_SALVAMENTO);
+  } catch (erro) {
+    console.error("Erro ao acessar armazenamento:", erro);
+    return;
+  }
+
+  if (!dados) {
+    return;
+  }
+
+  try {
+    const personagem = JSON.parse(dados);
+
+    if (!personagemValido(personagem)) {
+      console.warn("Dados de personagem inválidos.");
+      return;
+    }
+
+    personagemSalvo = personagem;
+
+    tipoSelecionado = personagem.tipo;
+    arquetipoSelecionado = personagem.arquetipo;
+    atributos = { ...personagem.atributos };
+
+    preencherFormulario(personagem);
+    preencherResumo(personagem);
+
+    atualizarEstadoSalvamento();
+    atualizarAtributos();
+
+    cancelarEdicao.classList.add("escondido");
+    mostrarEtapa(resumo);
+
+    mostrarMensagem("Sobrevivente recuperado do navegador.");
+  } catch (erro) {
+    console.error("Erro ao recuperar personagem:", erro);
+  }
+}
+
+// ==========================================
+// 11. INICIALIZAÇÃO
+// ==========================================
+
 atualizarAtributos();
+atualizarEstadoSalvamento();
+recuperarPersonagem();
