@@ -3,10 +3,12 @@
 
 // ==========================================
 // CARNE & CINZAS RPG
-// BIBLIOTECA DE SOBREVIVENTES - V0.3
+// BIBLIOTECA DE SOBREVIVENTES - V0.4
 // ==========================================
 
+// ==========================================
 // 1. CONFIGURAÇÕES
+// ==========================================
 
 const CHAVE_ANTIGA = "carneCinzas_personagem_v1";
 const CHAVE_BIBLIOTECA = "carneCinzas_biblioteca_v1";
@@ -69,6 +71,10 @@ const CATEGORIAS_PERICIAS = {
 const TODAS_PERICIAS = Object.values(
   CATEGORIAS_PERICIAS
 ).flat();
+
+// ==========================================
+// V0.4 - GRAUS DE PERÍCIA
+// ==========================================
 
 const GRAUS_PERICIA = {
   leigo: {
@@ -153,7 +159,7 @@ const REGRAS_TIPOS = {
 // Uma lista com um único nome representa
 // uma perícia fixa.
 //
-// "TODAS_PERICIAS" permite escolha livre.
+// TODAS_PERICIAS permite escolha livre.
 
 const REGRAS_ARQUETIPOS = {
   "Policial": {
@@ -253,7 +259,11 @@ const REGRAS_ARQUETIPOS = {
   "Trabalhador Rural": {
     escolhas: [
       ["Agricultura"],
-      ["Biologia", "Adestramento", "Sobrevivência"]
+      [
+        "Biologia",
+        "Adestramento",
+        "Sobrevivência"
+      ]
     ]
   },
 
@@ -272,10 +282,19 @@ const REGRAS_ARQUETIPOS = {
   }
 };
 
+// ==========================================
+// FIM DA PARTE 1
+// ==========================================
+
+ // ==========================================
+ // PARTE 2 - INTERFACE E ARMAZENAMENTO
+ // ==========================================
 
 const $ = (id) => document.getElementById(id);
 
+// ==========================================
 // 2. ELEMENTOS DA INTERFACE
+// ==========================================
 
 const telas = document.querySelectorAll(".tela");
 
@@ -302,10 +321,14 @@ const botaoContinuarPericias = $("continuar-pericias");
 const botaoVoltarAtributos = $("voltar-atributos");
 
 const cartoesTipo = document.querySelectorAll(".cartao-tipo");
-const cartoesArquetipo = document.querySelectorAll(".cartao-arquetipo");
-const cartoesAtributo = document.querySelectorAll(".cartao-atributo");
+const cartoesArquetipo =
+  document.querySelectorAll(".cartao-arquetipo");
+const cartoesAtributo =
+  document.querySelectorAll(".cartao-atributo");
 
+// ==========================================
 // 3. ESTADO DO APLICATIVO
+// ==========================================
 
 let sobreviventes = [];
 let personagemAtualId = null;
@@ -313,10 +336,13 @@ let editando = false;
 
 let tipoSelecionado = null;
 let arquetipoSelecionado = null;
+
 let atributos = { ...valoresIniciais };
+
 let escolhasPericiasArquetipo = [];
 let escolhasPericiasTipo = [];
 let periciaExpertise = null;
+
 let rascunhoConcluido = false;
 
 // ==========================================
@@ -384,7 +410,10 @@ voltarBiblioteca.id = "voltar-biblioteca";
 voltarBiblioteca.className = "botao-secundario";
 voltarBiblioteca.textContent = "← Voltar à biblioteca";
 
-voltarBiblioteca.addEventListener("click", mostrarBiblioteca);
+voltarBiblioteca.addEventListener(
+  "click",
+  mostrarBiblioteca
+);
 
 const tituloCriador = formulario.previousElementSibling;
 
@@ -586,6 +615,14 @@ function carregarBiblioteca() {
 }
 
 // ==========================================
+// FIM DA PARTE 2
+// ==========================================
+
+ // ==========================================
+ // PARTE 3 - BIBLIOTECA E FICHA
+ // ==========================================
+
+// ==========================================
 // 8. CARTÕES DA BIBLIOTECA
 // ==========================================
 
@@ -736,6 +773,21 @@ function criarNovoPersonagem() {
 
   atributos = { ...valoresIniciais };
 
+  // Reiniciar perícias da versão 0.4
+
+  escolhasPericiasArquetipo = [];
+  escolhasPericiasTipo = [];
+  periciaExpertise = null;
+
+  botaoContinuarPericias.disabled = true;
+
+  // Limpar elementos dinâmicos de perícias
+
+  $("pericias-fixas")?.replaceChildren();
+  $("pericias-escolhas")?.replaceChildren();
+  $("pericias-resumo")?.replaceChildren();
+  $("grupo-pericias-tipo")?.remove();
+
   formulario.reset();
 
   limparSelecoes();
@@ -807,6 +859,20 @@ function abrirPersonagem(id) {
 
   atributos = { ...personagem.atributos };
 
+  // Restaurar perícias, se existirem.
+  // Personagens antigos continuam compatíveis.
+
+  escolhasPericiasArquetipo = [
+    ...(personagem.pericias?.arquetipo || [])
+  ];
+
+  escolhasPericiasTipo = [
+    ...(personagem.pericias?.tipo || [])
+  ];
+
+  periciaExpertise =
+    personagem.pericias?.expertise || null;
+
   preencherFormulario(personagem);
   preencherResumo(personagem);
   atualizarAtributos();
@@ -854,8 +920,7 @@ function excluirPersonagem(id) {
 
   sobreviventes = novaLista;
 
-  // Evita que o personagem antigo reapareça
-  // depois de ser excluído da biblioteca.
+  // Evitar que um registro antigo reapareça
 
   if (personagem.origem === CHAVE_ANTIGA) {
     try {
@@ -878,7 +943,7 @@ function excluirPersonagem(id) {
 function montarPersonagem() {
   return {
     id: gerarId(),
-    versao: 1,
+    versao: 2,
 
     nome: $("nome").value.trim(),
     idade: $("idade").value,
@@ -887,9 +952,25 @@ function montarPersonagem() {
     tipo: tipoSelecionado,
     arquetipo: arquetipoSelecionado,
 
-    atributos: { ...atributos }
+    atributos: { ...atributos },
+
+    // Perícias da versão 0.4
+
+    pericias: {
+      arquetipo: [...escolhasPericiasArquetipo],
+      tipo: [...escolhasPericiasTipo],
+      expertise: periciaExpertise
+    }
   };
 }
+
+// ==========================================
+// FIM DA PARTE 3
+// ==========================================
+
+ // ==========================================
+ // PARTE 4 - CRIAÇÃO DO SOBREVIVENTE
+ // ==========================================
 
 // ==========================================
 // 15. FORMULÁRIO DE IDENTIDADE
@@ -1010,7 +1091,17 @@ cartoesTipo.forEach((cartao) => {
       return;
     }
 
-    tipoSelecionado = cartao.dataset.tipo;
+    const novoTipo = cartao.dataset.tipo;
+
+    // Reiniciar escolhas se o Tipo mudar
+
+    if (tipoSelecionado !== novoTipo) {
+      escolhasPericiasTipo = [];
+      periciaExpertise = null;
+      rascunhoConcluido = false;
+    }
+
+    tipoSelecionado = novoTipo;
 
     cartoesTipo.forEach((outro) => {
       outro.classList.remove("selecionado");
@@ -1053,7 +1144,18 @@ cartoesArquetipo.forEach((cartao) => {
       return;
     }
 
-    arquetipoSelecionado = cartao.dataset.arquetipo;
+    const novoArquetipo = cartao.dataset.arquetipo;
+
+    // Reiniciar perícias se o Arquétipo mudar
+
+    if (arquetipoSelecionado !== novoArquetipo) {
+      escolhasPericiasArquetipo = [];
+      escolhasPericiasTipo = [];
+      periciaExpertise = null;
+      rascunhoConcluido = false;
+    }
+
+    arquetipoSelecionado = novoArquetipo;
 
     cartoesArquetipo.forEach((outro) => {
       outro.classList.remove("selecionado");
@@ -1184,13 +1286,398 @@ $("voltar-arquetipo").addEventListener("click", () => {
 });
 
 // ==========================================
-// 20. FINALIZAR CRIAÇÃO
+// FIM DA PARTE 4
+// ==========================================
+
+ // ==========================================
+ // PARTE 5 - SISTEMA DE PERÍCIAS
+ // ==========================================
+
+// ==========================================
+// 20. AVANÇAR PARA PERÍCIAS
 // ==========================================
 
 botaoContinuarAtributos.addEventListener("click", () => {
   if (
     personagemAtualId ||
     !validarAtributos(atributos)
+  ) {
+    return;
+  }
+
+  renderizarPericiasArquetipo();
+  renderizarPericiasTipo();
+  atualizarResumoPericias();
+  validarEscolhasPericias();
+
+  mostrarParte(etapaPericias);
+});
+
+// ==========================================
+// 21. NAVEGAÇÃO DAS PERÍCIAS
+// ==========================================
+
+botaoVoltarAtributos.addEventListener("click", () => {
+  if (!personagemAtualId) {
+    mostrarParte(etapaAtributos);
+  }
+});
+
+// ==========================================
+// 22. PERÍCIAS DO ARQUÉTIPO
+// ==========================================
+
+function obterPericiasArquetipo() {
+  const regras = REGRAS_ARQUETIPOS[arquetipoSelecionado];
+
+  if (!regras) {
+    return [];
+  }
+
+  return regras.escolhas;
+}
+
+// Criar um cartão clicável de perícia
+
+function criarCartaoPericia(nome, selecionado, aoClicar) {
+  const botao = document.createElement("button");
+
+  botao.type = "button";
+  botao.className = "cartao-pericia";
+  botao.classList.toggle("selecionado", selecionado);
+  botao.setAttribute("aria-pressed", String(selecionado));
+
+  const texto = document.createElement("span");
+  texto.className = "pericia-nome";
+  texto.textContent = nome;
+
+  const indicador = document.createElement("span");
+  indicador.className = "pericia-grau";
+  indicador.textContent = selecionado
+    ? "Selecionada"
+    : "Escolher";
+
+  botao.append(texto, indicador);
+  botao.addEventListener("click", aoClicar);
+
+  return botao;
+}
+
+// Exibir as perícias concedidas pelo Arquétipo
+
+function renderizarPericiasArquetipo() {
+  const regras = obterPericiasArquetipo();
+
+  const fixas = $("pericias-fixas");
+  const escolhas = $("pericias-escolhas");
+  const instrucoes = $("pericias-instrucoes");
+
+  fixas.replaceChildren();
+  escolhas.replaceChildren();
+
+  instrucoes.textContent =
+    "Escolha as perícias concedidas pelo seu Arquétipo.";
+
+  // Reservar as perícias obrigatórias
+
+  const fixasObrigatorias = regras
+    .filter(opcoes => opcoes.length === 1)
+    .map(opcoes => opcoes[0]);
+
+  const anteriores = [...escolhasPericiasArquetipo];
+  const novas = [];
+  const usadas = new Set(fixasObrigatorias);
+
+  regras.forEach((opcoes, indice) => {
+    if (opcoes.length === 1) {
+      novas[indice] = opcoes[0];
+      return;
+    }
+
+    const anterior = anteriores[indice];
+
+    if (
+      opcoes.includes(anterior) &&
+      !usadas.has(anterior)
+    ) {
+      novas[indice] = anterior;
+      usadas.add(anterior);
+    }
+  });
+
+  escolhasPericiasArquetipo = novas;
+
+  // Remover perícias do Tipo que ficaram repetidas
+
+  escolhasPericiasTipo = escolhasPericiasTipo.filter(
+    nome => !usadas.has(nome)
+  );
+
+  // Construir os cartões
+
+  regras.forEach((opcoes, indice) => {
+    if (opcoes.length === 1) {
+      const cartao = document.createElement("div");
+      cartao.className = "cartao-pericia fixo";
+
+      const nome = document.createElement("span");
+      nome.className = "pericia-nome";
+      nome.textContent = opcoes[0];
+
+      const grau = document.createElement("span");
+      grau.className = "pericia-grau";
+      grau.textContent = "Treinado";
+
+      cartao.append(nome, grau);
+      fixas.appendChild(cartao);
+      return;
+    }
+
+    const grupo = document.createElement("div");
+    grupo.className = "grupo-escolha-pericia";
+
+    const titulo = document.createElement("h4");
+    titulo.textContent = `Escolha ${indice + 1}`;
+
+    const listaGrupo = document.createElement("div");
+    listaGrupo.className = "pericias-lista";
+
+    opcoes.forEach(nome => {
+      const jaEscolhida = escolhasPericiasArquetipo.some(
+        (escolha, outroIndice) =>
+          outroIndice !== indice && escolha === nome
+      );
+
+      if (jaEscolhida) {
+        return;
+      }
+
+      const selecionado =
+        escolhasPericiasArquetipo[indice] === nome;
+
+      const cartao = criarCartaoPericia(
+        nome,
+        selecionado,
+        () => {
+          escolhasPericiasArquetipo[indice] =
+            selecionado ? undefined : nome;
+
+          renderizarPericiasArquetipo();
+          renderizarPericiasTipo();
+          atualizarResumoPericias();
+          validarEscolhasPericias();
+        }
+      );
+
+      listaGrupo.appendChild(cartao);
+    });
+
+    grupo.append(titulo, listaGrupo);
+    escolhas.appendChild(grupo);
+  });
+
+  atualizarResumoPericias();
+}
+
+// ==========================================
+// 23. PERÍCIAS DO TIPO
+// ==========================================
+
+function obterOpcoesPericiasTipo() {
+  const regras = REGRAS_TIPOS[tipoSelecionado];
+
+  if (!regras) {
+    return [];
+  }
+
+  const jaTreinadas =
+    escolhasPericiasArquetipo.filter(Boolean);
+
+  return regras.opcoes.filter(
+    nome => !jaTreinadas.includes(nome)
+  );
+}
+
+function obterTreinamentosAtuais() {
+  return [
+    ...new Set([
+      ...escolhasPericiasArquetipo.filter(Boolean),
+      ...escolhasPericiasTipo.filter(Boolean)
+    ])
+  ];
+}
+
+// Exibir as opções de perícias do Tipo
+
+function renderizarPericiasTipo() {
+  const regras = REGRAS_TIPOS[tipoSelecionado];
+
+  if (!regras) {
+    return;
+  }
+
+  const opcoes = obterOpcoesPericiasTipo();
+
+  // Preservar apenas escolhas válidas
+
+  escolhasPericiasTipo = [
+    ...new Set(escolhasPericiasTipo)
+  ]
+    .filter(nome => opcoes.includes(nome))
+    .slice(0, regras.quantidade);
+
+  // Evitar seções duplicadas
+
+  $("grupo-pericias-tipo")?.remove();
+
+  const secao = document.createElement("section");
+  secao.id = "grupo-pericias-tipo";
+  secao.className = "pericias-secao";
+
+  const titulo = document.createElement("h3");
+  titulo.textContent = "Perícias do Tipo";
+
+  const instrucoes = document.createElement("p");
+  instrucoes.className = "pericias-explicacao";
+
+  instrucoes.textContent =
+    `Escolha ${regras.quantidade} perícias do Tipo ${tipoSelecionado}. ` +
+    `Selecionadas: ${escolhasPericiasTipo.length}/${regras.quantidade}`;
+
+  const lista = document.createElement("div");
+  lista.className = "pericias-lista";
+
+  opcoes.forEach(nome => {
+    const selecionado =
+      escolhasPericiasTipo.includes(nome);
+
+    const cartao = criarCartaoPericia(
+      nome,
+      selecionado,
+      () => {
+        if (selecionado) {
+          escolhasPericiasTipo =
+            escolhasPericiasTipo.filter(
+              pericia => pericia !== nome
+            );
+        } else if (
+          escolhasPericiasTipo.length < regras.quantidade
+        ) {
+          escolhasPericiasTipo.push(nome);
+        }
+
+        renderizarPericiasTipo();
+        atualizarResumoPericias();
+        validarEscolhasPericias();
+      }
+    );
+
+    lista.appendChild(cartao);
+  });
+
+  secao.append(titulo, instrucoes, lista);
+
+  // Inserir depois das escolhas do Arquétipo
+
+  const secaoEscolhas =
+    $("pericias-escolhas").closest(".pericias-secao");
+
+  secaoEscolhas.after(secao);
+}
+
+// ==========================================
+// 24. RESUMO DOS TREINAMENTOS
+// ==========================================
+
+function atualizarResumoPericias() {
+  const resumoPericias = $("pericias-resumo");
+
+  resumoPericias.replaceChildren();
+
+  obterTreinamentosAtuais().forEach(nome => {
+    const cartao = document.createElement("div");
+    cartao.className = "cartao-pericia";
+
+    const texto = document.createElement("span");
+    texto.className = "pericia-nome";
+    texto.textContent = nome;
+
+    const grau = document.createElement("span");
+    grau.className = "pericia-grau";
+    grau.textContent =
+      periciaExpertise === nome ? "Expert" : "Treinado";
+
+    cartao.append(texto, grau);
+    resumoPericias.appendChild(cartao);
+  });
+}
+
+// ==========================================
+// 25. VALIDAÇÃO DAS PERÍCIAS
+// ==========================================
+
+function validarEscolhasPericias() {
+  const regrasArquetipo = obterPericiasArquetipo();
+  const regrasTipo = REGRAS_TIPOS[tipoSelecionado];
+
+  if (!regrasTipo || regrasArquetipo.length === 0) {
+    botaoContinuarPericias.disabled = true;
+    return false;
+  }
+
+  const escolhasArquetipoValidas =
+    regrasArquetipo.every((opcoes, indice) => {
+      const nome = escolhasPericiasArquetipo[indice];
+      return opcoes.includes(nome);
+    });
+
+  const nomesArquetipo =
+    escolhasPericiasArquetipo.filter(Boolean);
+
+  const arquetipoSemDuplicatas =
+    new Set(nomesArquetipo).size ===
+    nomesArquetipo.length;
+
+  const opcoesTipo = obterOpcoesPericiasTipo();
+
+  const escolhasTipoValidas =
+    escolhasPericiasTipo.length === regrasTipo.quantidade &&
+    escolhasPericiasTipo.every(nome =>
+      opcoesTipo.includes(nome)
+    );
+
+  const tipoSemDuplicatas =
+    new Set(escolhasPericiasTipo).size ===
+    escolhasPericiasTipo.length;
+
+  const valido =
+    escolhasArquetipoValidas &&
+    arquetipoSemDuplicatas &&
+    escolhasTipoValidas &&
+    tipoSemDuplicatas;
+
+  botaoContinuarPericias.disabled = !valido;
+
+  return valido;
+}
+
+// ==========================================
+// FIM DA PARTE 5
+// ==========================================
+
+ // ==========================================
+ // PARTE 6 - FINALIZAÇÃO E SALVAMENTO
+ // ==========================================
+
+// ==========================================
+// 26. FINALIZAR CRIAÇÃO
+// ==========================================
+
+botaoContinuarPericias.addEventListener("click", () => {
+  if (
+    personagemAtualId ||
+    !validarAtributos(atributos) ||
+    !validarEscolhasPericias()
   ) {
     return;
   }
@@ -1216,7 +1703,7 @@ botaoContinuarAtributos.addEventListener("click", () => {
 });
 
 // ==========================================
-// 21. SALVAR NOVO SOBREVIVENTE
+// 27. SALVAR NOVO SOBREVIVENTE
 // ==========================================
 
 botaoSalvar.addEventListener("click", () => {
@@ -1225,7 +1712,8 @@ botaoSalvar.addEventListener("click", () => {
     !rascunhoConcluido ||
     !tipoSelecionado ||
     !arquetipoSelecionado ||
-    !validarAtributos(atributos)
+    !validarAtributos(atributos) ||
+    !validarEscolhasPericias()
   ) {
     return;
   }
@@ -1254,268 +1742,15 @@ botaoSalvar.addEventListener("click", () => {
   );
 });
 
- // ==========================================
- // V0.4 - NAVEGAÇÃO DAS PERÍCIAS
- // ==========================================
-
-botaoVoltarAtributos.addEventListener("click", () => {
-  if (!personagemAtualId) {
-    mostrarParte(etapaAtributos);
-  }
-});
-
 // ==========================================
-// V0.4 - SELEÇÃO DE PERÍCIAS DO ARQUÉTIPO
-// ==========================================
-
-function obterPericiasArquetipo() {
-  const regras = REGRAS_ARQUETIPOS[arquetipoSelecionado];
-
-  if (!regras) {
-    return [];
-  }
-
-  return regras.escolhas;
-}
-
-function criarCartaoPericia(nome, selecionado, aoClicar) {
-  const botao = document.createElement("button");
-
-  botao.type = "button";
-  botao.className = "cartao-pericia";
-  botao.classList.toggle("selecionado", selecionado);
-  botao.setAttribute("aria-pressed", String(selecionado));
-
-  const texto = document.createElement("span");
-  texto.className = "pericia-nome";
-  texto.textContent = nome;
-
-  const indicador = document.createElement("span");
-  indicador.className = "pericia-grau";
-  indicador.textContent = selecionado
-    ? "Selecionada"
-    : "Escolher";
-
-  botao.append(texto, indicador);
-  botao.addEventListener("click", aoClicar);
-
-  return botao;
-}
-
-function atualizarResumoPericiasArquetipo() {
-  const resumoPericias = $("pericias-resumo");
-
-  resumoPericias.replaceChildren();
-
-  escolhasPericiasArquetipo
-    .filter(Boolean)
-    .forEach((nome) => {
-      const cartao = document.createElement("div");
-      cartao.className = "cartao-pericia";
-
-      const texto = document.createElement("span");
-      texto.className = "pericia-nome";
-      texto.textContent = nome;
-
-      const grau = document.createElement("span");
-      grau.className = "pericia-grau";
-      grau.textContent = "Treinado";
-
-      cartao.append(texto, grau);
-      resumoPericias.appendChild(cartao);
-    });
-}
-
-function renderizarPericiasArquetipo() {
-  const regras = obterPericiasArquetipo();
-
-  const fixas = $("pericias-fixas");
-  const escolhas = $("pericias-escolhas");
-  const instrucoes = $("pericias-instrucoes");
-
-  fixas.replaceChildren();
-  escolhas.replaceChildren();
-
-  instrucoes.textContent =
-    "Escolha as perícias concedidas pelo seu Arquétipo.";
-
-  // Preencher automaticamente as perícias fixas
-  regras.forEach((opcoes, indice) => {
-    if (opcoes.length === 1) {
-      escolhasPericiasArquetipo[indice] = opcoes[0];
-    }
-  });
-
-  // Renderizar os grupos de escolha
-  regras.forEach((opcoes, indice) => {
-    if (opcoes.length === 1) {
-      const cartao = document.createElement("div");
-      cartao.className = "cartao-pericia fixo";
-
-      const nome = document.createElement("span");
-      nome.className = "pericia-nome";
-      nome.textContent = opcoes[0];
-
-      const grau = document.createElement("span");
-      grau.className = "pericia-grau";
-      grau.textContent = "Treinado";
-
-      cartao.append(nome, grau);
-      fixas.appendChild(cartao);
-      return;
-    }
-
-    const grupo = document.createElement("div");
-    grupo.className = "grupo-escolha-pericia";
-
-    const titulo = document.createElement("h4");
-    titulo.textContent = `Escolha ${indice + 1}`;
-
-    const listaGrupo = document.createElement("div");
-    listaGrupo.className = "pericias-lista";
-
-    opcoes.forEach((nome) => {
-      const jaEscolhida = escolhasPericiasArquetipo.some(
-        (escolha, outroIndice) =>
-          outroIndice !== indice && escolha === nome
-      );
-
-      if (jaEscolhida) return;
-
-      const selecionado =
-        escolhasPericiasArquetipo[indice] === nome;
-
-      const cartao = criarCartaoPericia(
-        nome,
-        selecionado,
-        () => {
-          escolhasPericiasArquetipo[indice] =
-            selecionado ? undefined : nome;
-
-          renderizarPericiasArquetipo();
-        }
-      );
-
-      listaGrupo.appendChild(cartao);
-    });
-
-    grupo.append(titulo, listaGrupo);
-    escolhas.appendChild(grupo);
-  });
-
-  atualizarResumoPericiasArquetipo();
-}
-
-// ==========================================
-// V0.4 - PERÍCIAS DO TIPO
-// ==========================================
-
-function obterOpcoesPericiasTipo() {
-  const regras = REGRAS_TIPOS[tipoSelecionado];
-
-  if (!regras) {
-    return [];
-  }
-
-  const jaTreinadas =
-    escolhasPericiasArquetipo.filter(Boolean);
-
-  return regras.opcoes.filter(
-    (nome) => !jaTreinadas.includes(nome)
-  );
-}
-
-function obterTreinamentosAtuais() {
-  return [
-    ...new Set([
-      ...escolhasPericiasArquetipo.filter(Boolean),
-      ...escolhasPericiasTipo.filter(Boolean)
-    ])
-  ];
-}
-
-function renderizarPericiasTipo() {
-  const regras = REGRAS_TIPOS[tipoSelecionado];
-  if (!regras) return;
-
-  const opcoes = obterOpcoesPericiasTipo();
-  const container = $("pericias-escolhas");
-
-  // Remover uma seção anterior, se existir
-  $("grupo-pericias-tipo")?.remove();
-
-  const secao = document.createElement("section");
-  secao.id = "grupo-pericias-tipo";
-  secao.className = "pericias-secao";
-
-  const titulo = document.createElement("h3");
-  titulo.textContent = "Perícias do Tipo";
-
-  const instrucoes = document.createElement("p");
-  instrucoes.className = "pericias-explicacao";
-  instrucoes.textContent =
-    `Escolha ${regras.quantidade} perícias do Tipo ${tipoSelecionado}. ` +
-    `Selecionadas: ${escolhasPericiasTipo.length}/${regras.quantidade}`;
-
-  const lista = document.createElement("div");
-  lista.className = "pericias-lista";
-
-  opcoes.forEach((nome) => {
-    const selecionado = escolhasPericiasTipo.includes(nome);
-
-    const cartao = criarCartaoPericia(
-      nome,
-      selecionado,
-      () => {
-        if (selecionado) {
-          escolhasPericiasTipo =
-            escolhasPericiasTipo.filter(
-              (pericia) => pericia !== nome
-            );
-        } else if (
-          escolhasPericiasTipo.length < regras.quantidade
-        ) {
-          escolhasPericiasTipo.push(nome);
-        }
-
-        renderizarPericiasTipo();
-        atualizarResumoPericias();
-      }
-    );
-
-    lista.appendChild(cartao);
-  });
-
-  secao.append(titulo, instrucoes, lista);
-  container.after(secao);
-}
-
-function atualizarResumoPericias() {
-  const resumo = $("pericias-resumo");
-  resumo.replaceChildren();
-
-  obterTreinamentosAtuais().forEach((nome) => {
-    const cartao = document.createElement("div");
-    cartao.className = "cartao-pericia";
-
-    const texto = document.createElement("span");
-    texto.className = "pericia-nome";
-    texto.textContent = nome;
-
-    const grau = document.createElement("span");
-    grau.className = "pericia-grau";
-    grau.textContent = "Treinado";
-
-    cartao.append(texto, grau);
-    resumo.appendChild(cartao);
-  });
-}
-
-
-// ==========================================
-// 22. INICIALIZAÇÃO
+// 28. INICIALIZAÇÃO
 // ==========================================
 
 carregarBiblioteca();
 atualizarAtributos();
 mostrarBiblioteca();
+
+// ==========================================
+// FIM DA PARTE 6
+// FIM DO SCRIPT.JS - V0.4
+// ==========================================
