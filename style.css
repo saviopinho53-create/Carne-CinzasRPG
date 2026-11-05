@@ -172,3 +172,92 @@ nav button:focus-visible {
 .tela.escondido {
   display: none;
 }
+
+/* CRIADOR DE SOBREVIVENTES */
+
+#form-personagem {
+  margin-top: 30px;
+}
+
+.campo {
+  margin-bottom: 22px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--texto);
+}
+
+.campo input,
+.campo textarea {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--cartao);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 7px;
+  font: inherit;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+.botao-principal {
+  width: 100%;
+  padding: 16px;
+  background: var(--destaque);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.botao-principal:hover {
+  background: var(--destaque-hover);
+}
+
+/* RESUMO DO PERSONAGEM */
+
+#resumo-personagem {
+  margin-top: 30px;
+  padding: 25px;
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-left: 4px solid var(--destaque);
+  border-radius: 8px;
+}
+
+#resumo-personagem h3 {
+  margin-top: 0;
+}
+
+#resumo-descricao {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+#editar-personagem {
+  padding: 12px 18px;
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#editar-personagem:hover {
+  border-color: var(--destaque);
+}
