@@ -6,19 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carne & Cinzas RPG</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
+
 <body>
-
   <main>
-    <h1>CARNE & CINZAS</h1>
-    <p>Sobreviva ao fim do mundo.</p>
 
-    <nav>
-      <button>Criar Sobrevivente</button>
-      <button>Campanhas</button>
-      <button>Assentamentos</button>
-    </nav>
+    <!-- MENU PRINCIPAL -->
+    <section id="inicio" class="tela">
+      <h1>CARNE & CINZAS</h1>
+      <p>Sobreviva ao fim do mundo.</p>
+
+      <nav>
+        <button data-destino="personagens">
+          Criar Sobrevivente
+        </button>
+
+        <button data-destino="campanhas">
+          Campanhas
+        </button>
+
+        <button data-destino="assentamentos">
+          Assentamentos
+        </button>
+      </nav>
+    </section>
+
+    <!-- CRIAÇÃO DE PERSONAGENS -->
+    <section id="personagens" class="tela escondido">
+      <button class="voltar">← Voltar</button>
+
+      <h2>Criar Sobrevivente</h2>
+      <p>A história de um sobrevivente começa aqui.</p>
+    </section>
+
+    <!-- CAMPANHAS -->
+    <section id="campanhas" class="tela escondido">
+      <button class="voltar">← Voltar</button>
+
+      <h2>Campanhas</h2>
+      <p>Suas campanhas aparecerão aqui.</p>
+    </section>
+
+    <!-- ASSENTAMENTOS -->
+    <section id="assentamentos" class="tela escondido">
+      <button class="voltar">← Voltar</button>
+
+      <h2>Assentamentos</h2>
+      <p>Gerencie sua comunidade de sobreviventes.</p>
+    </section>
+
   </main>
-
 </body>
 </html>
