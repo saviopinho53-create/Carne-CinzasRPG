@@ -96,6 +96,182 @@ const GRAUS_PERICIA = {
   }
 };
 
+// ==========================================
+// V0.4 - REGRAS DE PERÍCIAS DOS TIPOS
+// ==========================================
+
+const REGRAS_TIPOS = {
+  "Líder": {
+    quantidade: 2,
+    opcoes: [
+      "Negociação",
+      "Liderança",
+      "Persuasão",
+      "Investigação",
+      "Percepção",
+      "Sobrevivência"
+    ],
+    expertises: 1
+  },
+
+  "Lutador": {
+    quantidade: 2,
+    opcoes: [
+      "Briga",
+      "Armas Brancas",
+      "Armas de Fogo",
+      "Intimidação",
+      "Tática",
+      "Atletismo"
+    ],
+    expertises: 1
+  },
+
+  "Especialista": {
+    quantidade: 3,
+    opcoes: [...TODAS_PERICIAS],
+    expertises: 1
+  },
+
+  "Diplomata": {
+    quantidade: 2,
+    opcoes: [
+      ...CATEGORIAS_PERICIAS.sociais,
+      ...CATEGORIAS_PERICIAS.gerais
+    ],
+    expertises: 1
+  }
+};
+
+// ==========================================
+// V0.4 - REGRAS DOS ARQUÉTIPOS
+// ==========================================
+
+// Cada entrada em "escolhas" representa
+// uma escolha independente de perícia.
+//
+// Uma lista com um único nome representa
+// uma perícia fixa.
+//
+// "TODAS_PERICIAS" permite escolha livre.
+
+const REGRAS_ARQUETIPOS = {
+  "Policial": {
+    escolhas: [
+      ["Armas de Fogo"],
+      [...TODAS_PERICIAS]
+    ]
+  },
+
+  "Religioso": {
+    escolhas: [
+      ["Empatia"],
+      [
+        ...CATEGORIAS_PERICIAS.sociais,
+        ...CATEGORIAS_PERICIAS.gerais
+      ]
+    ]
+  },
+
+  "Paramédico": {
+    escolhas: [
+      ["Medicina"],
+      ["Química", "Biologia"]
+    ]
+  },
+
+  "Criminoso": {
+    escolhas: [
+      ["Arrombamento"],
+      [...CATEGORIAS_PERICIAS.combate]
+    ]
+  },
+
+  "Soldado": {
+    escolhas: [
+      ["Armas de Fogo"],
+      [...CATEGORIAS_PERICIAS.combate]
+    ]
+  },
+
+  "Caçador": {
+    escolhas: [
+      ["Sobrevivência", "Adestramento"],
+      ["Armas de Fogo", "Armas Brancas"]
+    ]
+  },
+
+  "Político": {
+    escolhas: [
+      ["Negociação"],
+      ["Persuasão"]
+    ]
+  },
+
+  "Professor": {
+    escolhas: [
+      [...CATEGORIAS_PERICIAS.tecnicas],
+      [...TODAS_PERICIAS]
+    ]
+  },
+
+  "Mecânico": {
+    escolhas: [
+      ["Mecânica"],
+      ["Pilotagem"]
+    ]
+  },
+
+  "Técnico em Informática": {
+    escolhas: [
+      ["Tecnologia"],
+      [...TODAS_PERICIAS]
+    ]
+  },
+
+  "Cientista": {
+    escolhas: [
+      ["Investigação"],
+      ["Biologia", "Química"]
+    ]
+  },
+
+  "Ator": {
+    escolhas: [
+      [...CATEGORIAS_PERICIAS.sociais],
+      [...CATEGORIAS_PERICIAS.sociais]
+    ]
+  },
+
+  "Artista Marcial": {
+    escolhas: [
+      ["Briga"],
+      ["Atletismo"]
+    ]
+  },
+
+  "Trabalhador Rural": {
+    escolhas: [
+      ["Agricultura"],
+      ["Biologia", "Adestramento", "Sobrevivência"]
+    ]
+  },
+
+  "Apostador": {
+    escolhas: [
+      [...TODAS_PERICIAS],
+      [...TODAS_PERICIAS]
+    ]
+  },
+
+  "Bibliotecário": {
+    escolhas: [
+      ["Investigação"],
+      [...TODAS_PERICIAS]
+    ]
+  }
+};
+
 
 const $ = (id) => document.getElementById(id);
 
