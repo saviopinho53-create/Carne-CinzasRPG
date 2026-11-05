@@ -1,0 +1,119 @@
+
+/* CARNE & CINZAS RPG */
+/* Identidade visual - Versão 0.1 */
+
+:root {
+  --fundo: #151717;
+  --cartao: #242828;
+  --borda: #414545;
+  --texto: #eee6db;
+  --secundario: #a9a49d;
+  --destaque: #c45c45;
+  --destaque-hover: #e0785e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--fundo);
+  color: var(--texto);
+  font-family: Arial, sans-serif;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+main {
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 80px 0;
+}
+
+/* TÍTULO */
+
+h1 {
+  text-align: center;
+  font-size: clamp(30px, 6vw, 48px);
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+  color: var(--texto);
+}
+
+main > p {
+  text-align: center;
+  color: var(--secundario);
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 55px;
+}
+
+/* MENU PRINCIPAL */
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+nav button {
+  width: 100%;
+  padding: 24px;
+  background-color: var(--cartao);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-left: 4px solid var(--destaque);
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+/* INTERAÇÃO */
+
+nav button:hover {
+  background-color: #303535;
+  border-color: var(--destaque-hover);
+  transform: translateY(-3px);
+}
+
+nav button:active {
+  transform: translateY(0);
+}
+
+nav button:focus-visible {
+  outline: 2px solid var(--destaque-hover);
+  outline-offset: 4px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 480px) {
+  main {
+    padding: 50px 0;
+  }
+
+  h1 {
+    letter-spacing: 2px;
+  }
+
+  nav button {
+    padding: 20px;
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  nav button {
+    transition: none;
+  }
+}
