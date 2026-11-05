@@ -1437,3 +1437,47 @@ button.cartao-pericia:focus-visible,
 
 }
 
+/* ==========================================
+   V0.4 - CATEGORIAS DE PERÍCIAS
+   ========================================== */
+
+.grupos-pericias {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.grupo-categoria-pericia {
+  border: 1px solid #555;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.categoria-pericia-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.categoria-pericia-titulo:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.categoria-pericia-contador {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.grupo-categoria-pericia .pericias-lista {
+  padding: 12px;
+}
+
+.grupo-categoria-pericia[open] {
+  border-color: #a33;
+}
+
