@@ -489,3 +489,153 @@ nav button:focus-visible {
   }
 }
 
+/* ==================================
+   ETAPA 4: ATRIBUTOS
+================================== */
+
+#etapa-atributos {
+  margin-top: 30px;
+}
+
+#etapa-atributos h3 {
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+#etapa-atributos > p {
+  color: #a9a49d;
+  line-height: 1.6;
+}
+
+/* PAINEL DE PONTOS */
+
+.painel-pontos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #242828;
+  border: 1px solid #414545;
+  border-radius: 10px;
+
+  padding: 18px;
+  margin: 25px 0;
+}
+
+.painel-pontos span {
+  color: #a9a49d;
+}
+
+.painel-pontos strong {
+  font-size: 28px;
+  color: #c45c45;
+}
+
+/* LISTA DE ATRIBUTOS */
+
+.lista-atributos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cartao-atributo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  background: #242828;
+  border: 1px solid #414545;
+  border-radius: 10px;
+
+  padding: 20px;
+}
+
+.info-atributo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-atributo strong {
+  color: #eee6db;
+  font-size: 16px;
+}
+
+.info-atributo span {
+  color: #a9a49d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* BOTÕES + E - */
+
+.controle-atributo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.controle-atributo button {
+  width: 36px;
+  height: 36px;
+
+  background: #353a3a;
+  color: #eee6db;
+
+  border: 1px solid #414545;
+  border-radius: 7px;
+
+  font-size: 22px;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.controle-atributo button:hover:not(:disabled) {
+  background: #c45c45;
+  border-color: #c45c45;
+}
+
+.controle-atributo button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.valor-atributo {
+  min-width: 20px;
+  text-align: center;
+
+  font-size: 22px;
+  font-weight: bold;
+  color: #eee6db;
+}
+
+/* ESCONDER A ETAPA */
+
+#etapa-atributos.escondido {
+  display: none;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 480px) {
+  .cartao-atributo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .controle-atributo {
+    justify-content: space-between;
+  }
+
+  .controle-atributo button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
