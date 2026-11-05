@@ -302,44 +302,125 @@
 
 </section>
 
-  <div id="resumo-personagem" class="escondido">
-    <h3>Identidade registrada</h3>
-    <p><strong>Nome:</strong> <span id="resumo-nome"></span></p>
-    <p><strong>Idade:</strong> <span id="resumo-idade"></span></p>
-    <p><strong>Tipo:</strong> <span id="resumo-tipo"></span></p>
-    <p><strong>Arquétipo:</strong> <span id="resumo-arquetipo"></span></p>
-    
-<h3>Atributos</h3>
 
-<div class="resumo-atributos">
-  <p>
-    <strong>CORPO:</strong>
-    <span id="resumo-corpo">0</span>
-  </p>
+<!-- FICHA DO SOBREVIVENTE -->
+<div id="resumo-personagem" class="escondido">
 
-  <p>
-    <strong>MENTE:</strong>
-    <span id="resumo-mente">0</span>
-  </p>
+  <div class="ficha-sobrevivente">
 
-  <p>
-    <strong>VONTADE:</strong>
-    <span id="resumo-vontade">0</span>
-  </p>
+    <!-- CABEÇALHO -->
+    <header class="ficha-cabecalho">
+      <p class="ficha-marca">CARNE & CINZAS RPG</p>
+      <h2>Ficha de Sobrevivente</h2>
+      <p>O mundo acabou. Sua história continua.</p>
+    </header>
 
-  <p>
-    <strong>APARÊNCIA:</strong>
-    <span id="resumo-aparencia">0</span>
-  </p>
+    <!-- IDENTIDADE -->
+    <section class="ficha-secao">
+
+      <h3>Identidade</h3>
+
+      <h2 id="resumo-nome"></h2>
+
+      <div class="ficha-identidade">
+
+        <div>
+          <span class="ficha-label">IDADE</span>
+          <strong id="resumo-idade"></strong>
+        </div>
+
+        <div>
+          <span class="ficha-label">TIPO</span>
+          <strong id="resumo-tipo"></strong>
+        </div>
+
+        <div>
+          <span class="ficha-label">ARQUÉTIPO</span>
+          <strong id="resumo-arquetipo"></strong>
+        </div>
+
+      </div>
+
+      <div class="ficha-historia">
+        <span class="ficha-label">HISTÓRIA</span>
+        <p id="resumo-descricao"></p>
+      </div>
+
+    </section>
+
+    <!-- ATRIBUTOS -->
+    <section class="ficha-secao">
+
+      <h3>Atributos</h3>
+
+      <div class="ficha-atributos">
+
+        <div class="ficha-atributo">
+          <span>CORPO</span>
+          <strong id="resumo-corpo">0</strong>
+        </div>
+
+        <div class="ficha-atributo">
+          <span>MENTE</span>
+          <strong id="resumo-mente">0</strong>
+        </div>
+
+        <div class="ficha-atributo">
+          <span>VONTADE</span>
+          <strong id="resumo-vontade">0</strong>
+        </div>
+
+        <div class="ficha-atributo">
+          <span>APARÊNCIA</span>
+          <strong id="resumo-aparencia">0</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- RECURSOS -->
+    <section class="ficha-secao">
+
+      <h3>Recursos de Sobrevivência</h3>
+
+      <div class="ficha-recursos">
+
+        <div class="ficha-recurso">
+          <span>VIDA</span>
+          <strong id="ficha-vida">—</strong>
+        </div>
+
+        <div class="ficha-recurso">
+          <span>GUARDA</span>
+          <strong id="ficha-guarda">—</strong>
+        </div>
+
+        <div class="ficha-recurso">
+          <span>MOVIMENTO</span>
+          <strong id="ficha-movimento">9 m</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- AÇÕES -->
+    <div class="ficha-acoes">
+
+      <button
+        type="button"
+        id="editar-personagem"
+        class="botao-secundario">
+        Editar informações
+      </button>
+
+    </div>
+
+  </div>
+
 </div>
 
-    <p><strong>Descrição:</strong></p>
-    <p id="resumo-descricao"></p>
-
-    <button type="button" id="editar-personagem">
-      Editar informações
-    </button>
-  </div>
 </section>
 
 
