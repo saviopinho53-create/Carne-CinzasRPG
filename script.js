@@ -22,6 +22,81 @@ const valoresIniciais = {
   aparencia: 0
 };
 
+// ==========================================
+// V0.4 - CATÁLOGO DE PERÍCIAS
+// ==========================================
+
+const CATEGORIAS_PERICIAS = {
+  tecnicas: [
+    "Arrombamento",
+    "Biologia",
+    "Engenharia",
+    "Mecânica",
+    "Medicina",
+    "Química",
+    "Tecnologia",
+    "Agricultura"
+  ],
+
+  combate: [
+    "Armas Brancas",
+    "Armas de Fogo",
+    "Briga",
+    "Explosivos",
+    "Furtividade",
+    "Tática"
+  ],
+
+  sociais: [
+    "Adestramento",
+    "Empatia",
+    "Enganação",
+    "Intimidação",
+    "Liderança",
+    "Negociação",
+    "Persuasão"
+  ],
+
+  gerais: [
+    "Atletismo",
+    "Investigação",
+    "Pilotagem",
+    "Percepção",
+    "Sobrevivência"
+  ]
+};
+
+const TODAS_PERICIAS = Object.values(
+  CATEGORIAS_PERICIAS
+).flat();
+
+const GRAUS_PERICIA = {
+  leigo: {
+    nome: "Leigo",
+    bonus: 0,
+    pontos: 0
+  },
+
+  treinado: {
+    nome: "Treinado",
+    bonus: 1,
+    pontos: 2
+  },
+
+  expert: {
+    nome: "Expert",
+    bonus: 2,
+    pontos: 4
+  },
+
+  mestre: {
+    nome: "Mestre",
+    bonus: 3,
+    pontos: 6
+  }
+};
+
+
 const $ = (id) => document.getElementById(id);
 
 // 2. ELEMENTOS DA INTERFACE
