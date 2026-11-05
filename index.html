@@ -79,6 +79,13 @@
       Continuar →
     </button>
 
+    <button
+     type="button"
+     id="cancelar-edicao"
+     class="botao-secundario escondido">
+    Cancelar edição
+    </button>
+
   </form>
 
 <!-- ETAPA 2: ESCOLHA DO TIPO -->
@@ -406,16 +413,30 @@
     </section>
 
     <!-- AÇÕES -->
-    <div class="ficha-acoes">
+  
+<div class="ficha-acoes">
 
-      <button
-        type="button"
-        id="editar-personagem"
-        class="botao-secundario">
-        Editar informações
-      </button>
+  <button
+    type="button"
+    id="salvar-personagem"
+    class="botao-principal">
+    Salvar Sobrevivente
+  </button>
 
-    </div>
+  <button
+    type="button"
+    id="editar-personagem"
+    class="botao-secundario">
+    Editar informações
+  </button>
+
+</div>
+
+<p id="mensagem-salvamento"
+   class="mensagem-salvamento"
+   role="status"
+   aria-live="polite"></p>
+
 
   </div>
 
