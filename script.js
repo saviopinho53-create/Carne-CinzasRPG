@@ -1434,6 +1434,83 @@ function obterTreinamentosAtuais() {
   ];
 }
 
+function renderizarPericiasTipo() {
+  const regras = REGRAS_TIPOS[tipoSelecionado];
+  if (!regras) return;
+
+  const opcoes = obterOpcoesPericiasTipo();
+  const container = $("pericias-escolhas");
+
+  // Remover uma seção anterior, se existir
+  $("grupo-pericias-tipo")?.remove();
+
+  const secao = document.createElement("section");
+  secao.id = "grupo-pericias-tipo";
+  secao.className = "pericias-secao";
+
+  const titulo = document.createElement("h3");
+  titulo.textContent = "Perícias do Tipo";
+
+  const instrucoes = document.createElement("p");
+  instrucoes.className = "pericias-explicacao";
+  instrucoes.textContent =
+    `Escolha ${regras.quantidade} perícias do Tipo ${tipoSelecionado}. ` +
+    `Selecionadas: ${escolhasPericiasTipo.length}/${regras.quantidade}`;
+
+  const lista = document.createElement("div");
+  lista.className = "pericias-lista";
+
+  opcoes.forEach((nome) => {
+    const selecionado = escolhasPericiasTipo.includes(nome);
+
+    const cartao = criarCartaoPericia(
+      nome,
+      selecionado,
+      () => {
+        if (selecionado) {
+          escolhasPericiasTipo =
+            escolhasPericiasTipo.filter(
+              (pericia) => pericia !== nome
+            );
+        } else if (
+          escolhasPericiasTipo.length < regras.quantidade
+        ) {
+          escolhasPericiasTipo.push(nome);
+        }
+
+        renderizarPericiasTipo();
+        atualizarResumoPericias();
+      }
+    );
+
+    lista.appendChild(cartao);
+  });
+
+  secao.append(titulo, instrucoes, lista);
+  container.after(secao);
+}
+
+function atualizarResumoPericias() {
+  const resumo = $("pericias-resumo");
+  resumo.replaceChildren();
+
+  obterTreinamentosAtuais().forEach((nome) => {
+    const cartao = document.createElement("div");
+    cartao.className = "cartao-pericia";
+
+    const texto = document.createElement("span");
+    texto.className = "pericia-nome";
+    texto.textContent = nome;
+
+    const grau = document.createElement("span");
+    grau.className = "pericia-grau";
+    grau.textContent = "Treinado";
+
+    cartao.append(texto, grau);
+    resumo.appendChild(cartao);
+  });
+}
+
 
 // ==========================================
 // 22. INICIALIZAÇÃO
