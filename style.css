@@ -117,3 +117,54 @@ nav button:focus-visible {
     transition: none;
   }
 }
+
+/* NAVEGAÇÃO ENTRE TELAS */
+
+.escondido {
+  display: none;
+}
+
+.tela {
+  animation: aparecer 0.3s ease;
+}
+
+.voltar {
+  background: transparent;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  color: var(--destaque);
+  padding: 12px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 35px;
+}
+
+.voltar:hover {
+  background: var(--cartao);
+}
+
+.tela h2 {
+  font-size: 30px;
+  color: var(--texto);
+}
+
+.tela > p {
+  color: var(--secundario);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tela {
+    animation: none;
+  }
+}
+
