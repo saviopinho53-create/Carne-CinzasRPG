@@ -1,9 +1,10 @@
 
+
 "use strict";
 
 // ==========================================
 // CARNE & CINZAS RPG
-// BIBLIOTECA DE SOBREVIVENTES - V0.4
+// BIBLIOTECA DE SOBREVIVENTES - V0.6
 // ==========================================
 
 // ==========================================
@@ -25,7 +26,7 @@ const valoresIniciais = {
 };
 
 // ==========================================
-// V0.4 - CATÁLOGO DE PERÍCIAS
+// 2. CATÁLOGO DE PERÍCIAS
 // ==========================================
 
 const CATEGORIAS_PERICIAS = {
@@ -73,7 +74,7 @@ const TODAS_PERICIAS = Object.values(
 ).flat();
 
 // ==========================================
-// V0.4 - GRAUS DE PERÍCIA
+// 3. GRAUS DE PERÍCIA
 // ==========================================
 
 const GRAUS_PERICIA = {
@@ -103,7 +104,7 @@ const GRAUS_PERICIA = {
 };
 
 // ==========================================
-// V0.4 - REGRAS DE PERÍCIAS DOS TIPOS
+// 4. REGRAS DOS TIPOS
 // ==========================================
 
 const REGRAS_TIPOS = {
@@ -117,7 +118,8 @@ const REGRAS_TIPOS = {
       "Percepção",
       "Sobrevivência"
     ],
-    expertises: 1
+    expertises: 1,
+    guardaBase: 10
   },
 
   "Lutador": {
@@ -130,13 +132,15 @@ const REGRAS_TIPOS = {
       "Tática",
       "Atletismo"
     ],
-    expertises: 1
+    expertises: 1,
+    guardaBase: 11
   },
 
   "Especialista": {
     quantidade: 3,
     opcoes: [...TODAS_PERICIAS],
-    expertises: 1
+    expertises: 1,
+    guardaBase: 9
   },
 
   "Diplomata": {
@@ -145,24 +149,26 @@ const REGRAS_TIPOS = {
       ...CATEGORIAS_PERICIAS.sociais,
       ...CATEGORIAS_PERICIAS.gerais
     ],
-    expertises: 1
+    expertises: 1,
+    guardaBase: 10
   }
 };
 
 // ==========================================
-// V0.4 - REGRAS DOS ARQUÉTIPOS
+// 5. REGRAS DOS ARQUÉTIPOS
 // ==========================================
 
-// Cada entrada em "escolhas" representa
-// uma escolha independente de perícia.
+// pvBase representa os PVs antes
+// de adicionar o atributo CORPO.
 //
-// Uma lista com um único nome representa
-// uma perícia fixa.
+// Cada entrada de escolhas representa
+// uma perícia fixa ou uma escolha.
 //
-// TODAS_PERICIAS permite escolha livre.
+// Listas de um elemento são perícias fixas.
 
 const REGRAS_ARQUETIPOS = {
   "Policial": {
+    pvBase: 11,
     escolhas: [
       ["Armas de Fogo"],
       [...TODAS_PERICIAS]
@@ -170,6 +176,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Religioso": {
+    pvBase: 10,
     escolhas: [
       ["Empatia"],
       [
@@ -180,6 +187,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Paramédico": {
+    pvBase: 9,
     escolhas: [
       ["Medicina"],
       ["Química", "Biologia"]
@@ -187,6 +195,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Criminoso": {
+    pvBase: 8,
     escolhas: [
       ["Arrombamento"],
       [...CATEGORIAS_PERICIAS.combate]
@@ -194,6 +203,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Soldado": {
+    pvBase: 13,
     escolhas: [
       ["Armas de Fogo"],
       [...CATEGORIAS_PERICIAS.combate]
@@ -201,6 +211,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Caçador": {
+    pvBase: 11,
     escolhas: [
       ["Sobrevivência", "Adestramento"],
       ["Armas de Fogo", "Armas Brancas"]
@@ -208,6 +219,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Político": {
+    pvBase: 9,
     escolhas: [
       ["Negociação"],
       ["Persuasão"]
@@ -215,6 +227,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Professor": {
+    pvBase: 9,
     escolhas: [
       [...CATEGORIAS_PERICIAS.tecnicas],
       [...TODAS_PERICIAS]
@@ -222,6 +235,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Mecânico": {
+    pvBase: 10,
     escolhas: [
       ["Mecânica"],
       ["Pilotagem"]
@@ -229,6 +243,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Técnico em Informática": {
+    pvBase: 7,
     escolhas: [
       ["Tecnologia"],
       [...TODAS_PERICIAS]
@@ -236,6 +251,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Cientista": {
+    pvBase: 9,
     escolhas: [
       ["Investigação"],
       ["Biologia", "Química"]
@@ -243,6 +259,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Ator": {
+    pvBase: 10,
     escolhas: [
       [...CATEGORIAS_PERICIAS.sociais],
       [...CATEGORIAS_PERICIAS.sociais]
@@ -250,6 +267,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Artista Marcial": {
+    pvBase: 12,
     escolhas: [
       ["Briga"],
       ["Atletismo"]
@@ -257,6 +275,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Trabalhador Rural": {
+    pvBase: 11,
     escolhas: [
       ["Agricultura"],
       [
@@ -268,6 +287,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Apostador": {
+    pvBase: 9,
     escolhas: [
       [...TODAS_PERICIAS],
       [...TODAS_PERICIAS]
@@ -275,6 +295,7 @@ const REGRAS_ARQUETIPOS = {
   },
 
   "Bibliotecário": {
+    pvBase: 8,
     escolhas: [
       ["Investigação"],
       [...TODAS_PERICIAS]
@@ -283,7 +304,43 @@ const REGRAS_ARQUETIPOS = {
 };
 
 // ==========================================
-// FIM DA PARTE 1
+// 6. CÁLCULO DOS VALORES DE SOBREVIVÊNCIA
+// ==========================================
+
+function calcularPontosDeVida(arquetipo, corpo) {
+  const regras = REGRAS_ARQUETIPOS[arquetipo];
+
+  if (!regras) {
+    return null;
+  }
+
+  const valorCorpo = Number(corpo);
+
+  if (!Number.isFinite(valorCorpo)) {
+    return null;
+  }
+
+  return regras.pvBase + valorCorpo;
+}
+
+function calcularGuarda(tipo, corpo) {
+  const regras = REGRAS_TIPOS[tipo];
+
+  if (!regras) {
+    return null;
+  }
+
+  const valorCorpo = Number(corpo);
+
+  if (!Number.isFinite(valorCorpo)) {
+    return null;
+  }
+
+  return regras.guardaBase + valorCorpo;
+}
+
+// ==========================================
+// FIM DA PARTE 1 - V0.6
 // ==========================================
 
  // ==========================================
