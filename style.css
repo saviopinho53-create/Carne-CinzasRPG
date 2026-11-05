@@ -1527,3 +1527,69 @@ button.cartao-pericia:focus-visible,
   border-color: #a33;
 }
 
+/* ==========================================
+   V0.6 - SOBREVIVÊNCIA NA FICHA
+   ========================================== */
+
+.ficha-sobrevivencia {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ficha-sobrevivencia-titulo {
+  margin-bottom: 16px;
+}
+
+.ficha-sobrevivencia-grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.indicador-sobrevivencia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border: 1px solid #555;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+}
+
+.indicador-sobrevivencia-rotulo {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.indicador-sobrevivencia-valor {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.indicador-pv {
+  border-color: #9f4444;
+}
+
+.indicador-pv .indicador-sobrevivencia-valor {
+  color: #e77878;
+}
+
+.indicador-guarda {
+  border-color: #527b9d;
+}
+
+.indicador-guarda .indicador-sobrevivencia-valor {
+  color: #83b8e4;
+}
+
+@media (max-width: 360px) {
+  .ficha-sobrevivencia-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
