@@ -314,7 +314,9 @@ let editando = false;
 let tipoSelecionado = null;
 let arquetipoSelecionado = null;
 let atributos = { ...valoresIniciais };
-
+let escolhasPericiasArquetipo = [];
+let escolhasPericiasTipo = [];
+let periciaExpertise = null;
 let rascunhoConcluido = false;
 
 // ==========================================
@@ -1260,6 +1262,190 @@ botaoVoltarAtributos.addEventListener("click", () => {
     mostrarParte(etapaAtributos);
   }
 });
+
+// ==========================================
+// V0.4 - SELEÇÃO DE PERÍCIAS DO ARQUÉTIPO
+// ==========================================
+
+function obterPericiasArquetipo() {
+  const regras = REGRAS_ARQUETIPOS[arquetipoSelecionado];
+
+  if (!regras) {
+    return [];
+  }
+
+  return regras.escolhas;
+}
+
+function criarCartaoPericia(nome, selecionado, aoClicar) {
+  const botao = document.createElement("button");
+
+  botao.type = "button";
+  botao.className = "cartao-pericia";
+  botao.classList.toggle("selecionado", selecionado);
+  botao.setAttribute("aria-pressed", String(selecionado));
+
+  const texto = document.createElement("span");
+  texto.className = "pericia-nome";
+  texto.textContent = nome;
+
+  const indicador = document.createElement("span");
+  indicador.className = "pericia-grau";
+  indicador.textContent = selecionado
+    ? "Selecionada"
+    : "Escolher";
+
+  botao.append(texto, indicador);
+  botao.addEventListener("click", aoClicar);
+
+  return botao;
+}
+
+function renderizarPericiasArquetipo() {
+  const regras = obterPericiasArquetipo();
+
+  const fixas = $("pericias-fixas");
+  const escolhas = $("pericias-escolhas");
+  const instrucoes = $("pericias-instrucoes");
+  const resumoPericias = $("pericias-resumo");
+
+  fixas.replaceChildren();
+  escolhas.replaceChildren();
+  resumoPericias.replaceChildren();
+
+  escolhasPericiasArquetipo = [];
+
+  instrucoes.textContent =
+    "Escolha as perícias concedidas pelo seu Arquétipo.";
+
+  regras.forEach((opcoes, indice) => {
+    // Perícia fixa
+    if (opcoes.length === 1) {
+      const nome = opcoes[0];
+
+      escolhasPericiasArquetipo[indice] = nome;
+
+      const cartao = document.createElement("div");
+      cartao.className = "cartao-pericia fixo";
+
+      const texto = document.createElement("span");
+      texto.className = "pericia-nome";
+      texto.textContent = nome;
+
+      const grau = document.createElement("span");
+      grau.className = "pericia-grau";
+      grau.textContent = "Treinado";
+
+      cartao.append(texto, grau);
+      fixas.appendChild(cartao);
+
+      return;
+    }
+
+    // Escolha entre várias opções
+    const grupo = document.createElement("div");
+    grupo.className = "grupo-escolha-pericia";
+
+    const titulo = document.createElement("h4");
+    titulo.textContent = `Escolha ${indice + 1}`;
+
+    grupo.appendChild(titulo);
+
+    const listaGrupo = document.createElement("div");
+    listaGrupo.className = "pericias-lista";
+
+    const atualizarGrupo = () => {
+      listaGrupo.replaceChildren();
+
+      opcoes.forEach((nome) => {
+        const selecionado =
+          escolhasPericiasArquetipo[indice] === nome;
+
+        const jaEscolhida =
+          escolhasPericiasArquetipo.some(
+            (escolha, outroIndice) =>
+              outroIndice !== indice && escolha === nome
+          );
+
+        if (jaEscolhida) {
+          return;
+        }
+
+        const cartao = criarCartaoPericia(
+          nome,
+          selecionado,
+          () => {
+            escolhasPericiasArquetipo[indice] = nome;
+            renderizarPericiasArquetipoSemReset();
+          }
+        );
+
+        listaGrupo.appendChild(cartao);
+      });
+    };
+
+    grupo.appendChild(listaGrupo);
+    escolhas.appendChild(grupo);
+
+    atualizarGrupo();
+  });
+
+  atualizarResumoPericiasArquetipo();
+}
+
+function atualizarResumoPericiasArquetipo() {
+  const resumoPericias = $("pericias-resumo");
+
+  resumoPericias.replaceChildren();
+
+  escolhasPericiasArquetipo
+    .filter(Boolean)
+    .forEach((nome) => {
+      const cartao = document.createElement("div");
+      cartao.className = "cartao-pericia";
+
+      const texto = document.createElement("span");
+      texto.className = "pericia-nome";
+      texto.textContent = nome;
+
+      const grau = document.createElement("span");
+      grau.className = "pericia-grau";
+      grau.textContent = "Treinado";
+
+      cartao.append(texto, grau);
+      resumoPericias.appendChild(cartao);
+    });
+}
+
+
+function renderizarPericiasArquetipoSemReset() {
+  const escolhasAtuais = [...escolhasPericiasArquetipo];
+
+  renderizarPericiasArquetipo();
+
+  escolhasPericiasArquetipo = escolhasAtuais;
+
+  document
+    .querySelectorAll(".grupo-escolha-pericia")
+    .forEach((grupo, indiceVisual) => {
+      const botoes = grupo.querySelectorAll("button");
+
+      botoes.forEach((botao) => {
+        const nome = botao.querySelector(".pericia-nome").textContent;
+        const selecionado =
+          escolhasPericiasArquetipo.includes(nome);
+
+        botao.classList.toggle("selecionado", selecionado);
+        botao.setAttribute("aria-pressed", String(selecionado));
+
+        botao.querySelector(".pericia-grau").textContent =
+          selecionado ? "Selecionada" : "Escolher";
+      });
+    });
+
+  atualizarResumoPericiasArquetipo();
+}
+
 // ==========================================
 // 22. INICIALIZAÇÃO
 // ==========================================
