@@ -152,11 +152,82 @@ continuarTipo.addEventListener("click", function() {
     return;
   }
 
-  etapaTipo.classList.add("escondido");
-  resumo.classList.remove("escondido");
+ etapaTipo.classList.add("escondido");
+
+document.getElementById("etapa-arquetipo")
+  .classList.remove("escondido");
 
   // Adiciona o Tipo ao resumo
   document.getElementById("resumo-tipo").textContent =
     tipoSelecionado;
+
+});
+
+
+// ==================================
+// ETAPA 3: SELEÇÃO DE ARQUÉTIPO
+// ==================================
+
+const etapaArquetipo =
+  document.getElementById("etapa-arquetipo");
+
+const cartoesArquetipo =
+  document.querySelectorAll(".cartao-arquetipo");
+
+const textoArquetipo =
+  document.getElementById("arquetipo-escolhido");
+
+const continuarArquetipo =
+  document.getElementById("continuar-arquetipo");
+
+const voltarTipo =
+  document.getElementById("voltar-tipo");
+
+let arquetipoSelecionado = null;
+
+// Selecionar Arquétipo
+cartoesArquetipo.forEach(function(cartao) {
+
+  cartao.setAttribute("aria-pressed", "false");
+
+  cartao.addEventListener("click", function() {
+
+    arquetipoSelecionado = cartao.dataset.arquetipo;
+
+    cartoesArquetipo.forEach(function(outro) {
+      outro.classList.remove("selecionado");
+      outro.setAttribute("aria-pressed", "false");
+    });
+
+    cartao.classList.add("selecionado");
+    cartao.setAttribute("aria-pressed", "true");
+
+    textoArquetipo.textContent =
+      "Arquétipo selecionado: " + arquetipoSelecionado;
+
+    continuarArquetipo.disabled = false;
+
+  });
+
+});
+
+// Voltar para escolher o Tipo
+voltarTipo.addEventListener("click", function() {
+  etapaArquetipo.classList.add("escondido");
+  etapaTipo.classList.remove("escondido");
+});
+
+// Continuar para o resumo
+continuarArquetipo.addEventListener("click", function() {
+
+  if (!arquetipoSelecionado) {
+    return;
+  }
+
+  document.getElementById("resumo-arquetipo").textContent =
+    arquetipoSelecionado;
+
+  etapaArquetipo.classList.add("escondido");
+  resumo.classList.remove("escondido");
 
 });
