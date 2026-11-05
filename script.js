@@ -676,8 +676,9 @@ function carregarBiblioteca() {
 // ==========================================
 
 
+ 
  // ==========================================
- // PARTE 3 - BIBLIOTECA E FICHA V0.5
+ // PARTE 3 - BIBLIOTECA E FICHA V0.6
  // ==========================================
 
 // ==========================================
@@ -863,11 +864,8 @@ $("criar-novo-personagem").addEventListener(
 );
 
 // ==========================================
-// 11. EXIBIÇÃO DAS PERÍCIAS NA FICHA
+// 11. DADOS DAS PERÍCIAS
 // ==========================================
-
-// Normalizar dados para manter compatibilidade
-// com personagens antigos e futuras habilidades.
 
 function obterDadosPericias(personagem) {
   const dados = personagem.pericias || {};
@@ -883,9 +881,6 @@ function obterDadosPericias(personagem) {
   const treinadas = [
     ...new Set([...arquetipo, ...tipo])
   ];
-
-  // Atualmente, Expertise é uma string.
-  // Futuramente, poderá ser um array.
 
   const expertises = Array.isArray(dados.expertise)
     ? dados.expertise.filter(Boolean)
@@ -905,6 +900,10 @@ function obterDadosPericias(personagem) {
   };
 }
 
+// ==========================================
+// 12. PERÍCIAS NA FICHA
+// ==========================================
+
 function renderizarPericiasFicha(personagem) {
   let secao = $("ficha-pericias");
 
@@ -912,8 +911,6 @@ function renderizarPericiasFicha(personagem) {
     secao = document.createElement("section");
     secao.id = "ficha-pericias";
     secao.className = "ficha-pericias";
-
-    // Adicionar ao resumo sem alterar o HTML
 
     const acoesResumo = botaoSalvar.parentElement;
 
@@ -940,13 +937,14 @@ function renderizarPericiasFicha(personagem) {
   const dados = obterDadosPericias(personagem);
 
   if (dados.treinadas.length === 0) {
-    const aviso = adicionarTexto(
-      "p",
-      "ficha-pericias-vazia",
-      "Este sobrevivente não possui perícias registradas."
+    secao.appendChild(
+      adicionarTexto(
+        "p",
+        "ficha-pericias-vazia",
+        "Este sobrevivente não possui perícias registradas."
+      )
     );
 
-    secao.appendChild(aviso);
     return;
   }
 
@@ -961,8 +959,6 @@ function renderizarPericiasFicha(personagem) {
 
   const listaPericias = document.createElement("div");
   listaPericias.className = "ficha-pericias-lista";
-
-  // Exibir primeiro as Expertises
 
   const ordenadas = [...dados.treinadas].sort(
     (a, b) => {
@@ -1008,7 +1004,91 @@ function renderizarPericiasFicha(personagem) {
 }
 
 // ==========================================
-// 12. PREENCHER FICHA
+// 13. CÁLCULO DE PV E GUARDA NA FICHA
+// ==========================================
+
+function renderizarSobrevivenciaFicha(personagem) {
+  let secao = $("ficha-sobrevivencia");
+
+  if (!secao) {
+    secao = document.createElement("section");
+    secao.id = "ficha-sobrevivencia";
+    secao.className = "ficha-sobrevivencia";
+
+    // Posicionar antes das perícias
+
+    const secaoPericias = $("ficha-pericias");
+
+    if (secaoPericias) {
+      secaoPericias.before(secao);
+    } else {
+      const acoesResumo = botaoSalvar.parentElement;
+
+      if (
+        acoesResumo &&
+        acoesResumo.parentElement === resumo
+      ) {
+        resumo.insertBefore(secao, acoesResumo);
+      } else {
+        resumo.appendChild(secao);
+      }
+    }
+  }
+
+  secao.replaceChildren();
+
+  const corpo = Number(personagem.atributos?.corpo);
+
+  const pv = calcularPontosDeVida(
+    personagem.arquetipo,
+    corpo
+  );
+
+  const guarda = calcularGuarda(
+    personagem.tipo,
+    corpo
+  );
+
+  const titulo = adicionarTexto(
+    "h3",
+    "ficha-sobrevivencia-titulo",
+    "Sobrevivência"
+  );
+
+  const grade = document.createElement("div");
+  grade.className = "ficha-sobrevivencia-grade";
+
+  function criarIndicador(nome, valor, classe) {
+    const cartao = document.createElement("div");
+    cartao.className = `indicador-sobrevivencia ${classe}`;
+
+    const rotulo = adicionarTexto(
+      "span",
+      "indicador-sobrevivencia-rotulo",
+      nome
+    );
+
+    const numero = adicionarTexto(
+      "strong",
+      "indicador-sobrevivencia-valor",
+      valor === null ? "—" : String(valor)
+    );
+
+    cartao.append(rotulo, numero);
+
+    return cartao;
+  }
+
+  grade.append(
+    criarIndicador("Pontos de Vida", pv, "indicador-pv"),
+    criarIndicador("Guarda", guarda, "indicador-guarda")
+  );
+
+  secao.append(titulo, grade);
+}
+
+// ==========================================
+// 14. PREENCHER FICHA
 // ==========================================
 
 function preencherResumo(p) {
@@ -1029,9 +1109,8 @@ function preencherResumo(p) {
     $(id).textContent = valor;
   });
 
-  // Exibir perícias e Expertise
-
   renderizarPericiasFicha(p);
+  renderizarSobrevivenciaFicha(p);
 }
 
 function preencherFormulario(p) {
@@ -1041,7 +1120,7 @@ function preencherFormulario(p) {
 }
 
 // ==========================================
-// 13. ABRIR PERSONAGEM SALVO
+// 15. ABRIR PERSONAGEM SALVO
 // ==========================================
 
 function abrirPersonagem(id) {
@@ -1092,7 +1171,7 @@ function abrirPersonagem(id) {
 }
 
 // ==========================================
-// 14. EXCLUIR PERSONAGEM
+// 16. EXCLUIR PERSONAGEM
 // ==========================================
 
 function excluirPersonagem(id) {
@@ -1139,13 +1218,13 @@ function excluirPersonagem(id) {
 }
 
 // ==========================================
-// 15. MONTAR PERSONAGEM
+// 17. MONTAR PERSONAGEM
 // ==========================================
 
 function montarPersonagem() {
   return {
     id: gerarId(),
-    versao: 3,
+    versao: 4,
 
     nome: $("nome").value.trim(),
     idade: $("idade").value,
@@ -1165,7 +1244,7 @@ function montarPersonagem() {
 }
 
 // ==========================================
-// FIM DA PARTE 3 - V0.5
+// FIM DA PARTE 3 - V0.6
 // ==========================================
 
  // ==========================================
