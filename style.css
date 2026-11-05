@@ -261,3 +261,7 @@ nav button:focus-visible {
 #editar-personagem:hover {
   border-color: var(--destaque);
 }
+#form-personagem.escondido,
+#resumo-personagem.escondido {
+  display: none;
+}
